@@ -1,0 +1,166 @@
+.conteneurBoutonIndicateurDashboard {
+    display: flex;
+    align-items: center;
+    align-content: center;
+}
+
+.boutonIndicateurDashbord {
+    border: 1px solid rgba(128, 128, 128, 0.373);
+    margin: 10px;
+    padding: 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    box-sizing: 1px 1px 1px 3px rgba(128, 128, 128, 0.373);
+}
+
+.barreGauche
+{
+    display: flex;
+    align-items: center;
+    align-content: center;
+    padding: 8px;
+    padding-left: 20px;
+    margin-top: 20px;
+    cursor: pointer
+}
+
+.actifBarreGauche {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    padding: 8px;
+    padding-left: 20px;
+    margin-top: 20px;
+    background-color: rgb(218, 165, 32);
+    color: white;
+    margin-right: 10px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    cursor: pointer
+}
+
+/* .headDashboardDevis, .actifHeadDashboardDevis
+{
+    padding: 10px;
+    margin-left: 20px;
+    padding-right: 85px;
+}
+
+.actifHeadDashboardDevis
+{
+    background-color: white;
+} */
+
+.offcanvas.offcanvas-start {
+
+    width: auto !important;
+
+}
+
+
+
+
+/* Code By Webdevtrick ( https://webdevtrick.com ) */
+.clearfixEtape:after {
+    clear: both;
+    content: "";
+    display: block;
+    height: 0;
+    font-family: 'Lato', sans-serif;
+}
+
+.pull-right {
+	float: right;
+}
+
+.arrow-steps .step {
+	font-size: 14px;
+	text-align: center;
+	color: gray;
+	cursor: default;
+	margin: 0 3px;
+	padding: 15px 15px 15px 30px;
+	min-width: 220px;
+	float: left;
+	position: relative;
+	background-color: #b4e7ff;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none; 
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+.arrow-steps .step:after,
+.arrow-steps .step:before {
+	content: " ";
+	position: absolute;
+	top: 0;
+	right: -18px;
+	width: 0;
+	height: 0;
+	border-top: 26px solid transparent;
+	border-bottom: 26px solid transparent;
+	border-left: 17px solid #b4e7ff;	
+	z-index: 2;
+  transition: border-color 0.2s ease;
+}
+.arrow-steps .step:before {
+	right: auto;
+	left: 0;
+	border-left: 16px solid #fff;	
+	z-index: 0;
+}
+.arrow-steps .step:first-child:before {
+	border: none;
+}
+.arrow-steps .step:first-child {
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+.arrow-steps .step span {
+	position: relative;
+}
+/* .arrow-steps .step span:before {
+	opacity: 0;
+	content: "✔";
+	position: absolute;
+	top: -2px;
+	left: -20px;
+	color: #06ac77;
+} */
+.arrow-steps .step.done span:before {
+	opacity: 1;
+	-webkit-transition: opacity 0.3s ease 0.5s;
+	-moz-transition: opacity 0.3s ease 0.5s;
+	-ms-transition: opacity 0.3s ease 0.5s;
+	transition: opacity 0.3s ease 0.5s;
+}
+.arrow-steps .step.current {
+	color: #fff;
+	background-color: rgb(218, 165, 32);
+}
+.arrow-steps .step.current:after {
+	border-left: 17px solid goldenrod;	
+}
+@media (max-width: 765px) {
+	.arrow-steps .step {
+		min-width: 35px;
+	}
+}
+
+
+.cardTypeFile
+{
+	transition: all 0.3s ease-in-out;
+}
+
+.cardTypeFile:hover
+{
+	background-color: #00aeed0b;
+	transition: all 0.3s ease-in-out;
+}
+
+.popover .popover-arrow {
+	display: none !important;
+  }
