@@ -70,7 +70,7 @@ function VueDEnsemble() {
 
                     {/* section 2 hearder */}
                     <div style={{ marginTop: "20px", width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "52vh", padding: "20px" }}>
-                        <h6>Statistique de lacation de matériel mensuel</h6>
+                        <h6>Statistique de location de matériel mensuel</h6>
                         <ResponsiveContainer width="100%" height="95%">
                             <LineChart
                                 width={500}

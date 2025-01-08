@@ -1,96 +1,108 @@
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import db from '../../firebase-config'; // Importez vos configurations Firebase
+import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import { FaSpinner } from 'react-icons/fa';
 
 export default function SortirMateriel() {
-
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const [errorsMesg, setErrorsMesg] = useState("")
+  const [titles, setTitles] = useState([]); // Liste des titres des matériels
+  const [errorsMesg, setErrorsMesg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const connexion = (data) => {
-    // console.log(data)
-    const auth = async () => {
-      
+  // Récupère tous les titres des matériels depuis Firebase
+  useEffect(() => {
+    const fetchTitles = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'materiels'));
+        const fetchedTitles = querySnapshot.docs.map(doc => doc.data().titre);
+        setTitles(fetchedTitles);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des titres :', error);
+        setErrorsMesg("Impossible de récupérer les titres des matériels.");
+      }
     };
 
-    auth();
+    fetchTitles();
+  }, []);
 
+  const connexion = async (data) => {
+    setIsLoading(true);
+    setErrorsMesg(""); // Réinitialise les messages d'erreur
+
+    try {
+      // Vérifiez si le matériel existe
+      const materielQuery = query(collection(db, 'materiels'), where('titre', '==', data.titre));
+      const querySnapshot = await getDocs(materielQuery);
+
+      if (querySnapshot.empty) {
+        setErrorsMesg("Matériel non trouvé !");
+        setIsLoading(false);
+        return;
+      }
+
+      const materielDoc = querySnapshot.docs[0];
+      const materielData = materielDoc.data();
+
+      // Vérifiez si le stock est suffisant
+      if (materielData.stock < data.quantite) {
+        setErrorsMesg("Stock insuffisant !");
+        setIsLoading(false);
+        return;
+      }
+
+      // Mettez à jour le stock
+      const updatedStock = parseInt(materielData.stock) - parseInt(data.quantite);
+      await updateDoc(doc(db, 'materiels', materielDoc.id), { stock: updatedStock });
+
+      alert('Sortie de matériel effectuée avec succès !');
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Erreur lors de la sortie du matériel :', error);
+      setErrorsMesg("Une erreur est survenue. Veuillez réessayer.");
+      setIsLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(connexion)}>
-      <label htmlFor="chk" className='label' aria-hidden="true">Sortir de matériel</label>
- 
- <table>
-  <tr>
-<td>Titre produit</td>
-<td>Quantité</td>
-  </tr>
- </table>
-      <div style={{display:"flex"}}>
+      <label htmlFor="chk" className="label" aria-hidden="true">Sortie de matériel</label>
 
-      <input
-        type="text"
-        className={'input'}
-        placeholder="Titre produit"
-        style={{height:"55px"}}
-      />
-      <input
-        type="text"
-        className={'input'}
-        placeholder="Quantité"
-        
-        style={{height:"55px"}}
-      />
-      <input
-        type="text"
-        className={'input'}
-        placeholder="Prix unitaire"
-        
-        style={{height:"55px"}}
-      />
-
-      </div>
-
-      <div style={{display: "flex"}}>
-                    
-      <select name="" id="" className={'input'} style={{height:"55px"}}>
-        <option value="">Titre produit 1</option>
-        <option value="">Titre produit 2</option>
-        <option value="">Titre produit 3</option>
-        <option value="">Titre produit 4</option>
-        <option value="">Titre produit 5</option>
-        <option value="">Titre produit 6</option>
-        <option value="">Titre produit 7</option>
-        <option value="">Titre produit 8</option>
-        <option value="">Titre produit 9</option>
-        <option value="">Titre produit 10</option>
-      </select>
-
-      <input
-        type="text"
+      {/* Champ Select pour les Titres */}
+      <select
         className={errors.titre ? 'inputError' : 'input'}
-        placeholder="Titre materiel"
         {...register("titre", {
-          required: "required",
-         
+          required: "Le titre est obligatoire",
+        })}
+        style={{height: "70px"}}
+      >
+        <option value="">-- Sélectionnez un matériel --</option>
+        {titles.map((title, index) => (
+          <option key={index} value={title}>{title}</option>
+        ))}
+      </select>
+      {errors.titre && <span className="errorMessage">{errors.titre.message}</span>}
+
+      {/* Champ Quantité */}
+      <input
+        type="number"
+        className={errors.quantite ? 'inputError' : 'input'}
+        placeholder="Quantité à sortir"
+        {...register("quantite", {
+          required: "La quantité est obligatoire",
+          min: { value: 1, message: "La quantité doit être au moins 1" },
         })}
       />
+      {errors.quantite && <span className="errorMessage">{errors.quantite.message}</span>}
 
-<input
-        type="text"
-        className={'input'}
-        placeholder="Stock Disponible"
-        {...register("stock")}
-      />
-      </div>
-
-      {/* {errors.mdpLogin && <span className="errorMessage">{errors.mdpLogin.message}</span>} */}
-      {/* message champ de saisi */}
+      {/* Message d'erreur global */}
       <div style={{ backgroundColor: "red", color: "white", textAlign: "center" }}>
         {errorsMesg}
       </div>
 
-      <button className='button'>VALIDER</button>
+      <button className="button" disabled={isLoading}>
+        {isLoading ? <FaSpinner className="spinner" /> : 'VALIDER'}
+      </button>
     </form>
-  )
+  );
 }

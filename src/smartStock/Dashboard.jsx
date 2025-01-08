@@ -24,7 +24,7 @@ function Dashboard() {
             {/* barre de menu a gauche */}
             <div style={{ position: "fixed", height: "100vh", minWidth: "268px", maxWidth: "268px", top: "0px", zIndex: 99, backgroundColor: "white" }}>
 
-                <div style={{ display: "flex", alignItems: "center", paddingLeft: "10px", paddingTop: "15px" }}>
+                <div style={{ fontSize: "30px", textTransform: "uppercase", fontWeight: "bold", marginTop:"30px", textAlign: "center" }}>
                     Smart Stock
                 </div>
                 <div style={{ marginTop: "50px" }}>
@@ -38,9 +38,12 @@ function Dashboard() {
                     <FaFile style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Liste de matériel</div>
                 </div>
 
-                <div className={titreElementActif === 'Devis demandé' ? 'actifBarreGauche' : 'barreGauche'} onClick={() => handleChangeContainer(<AddMateriel />, 'Devis demandé')}>
-                    <FaCalculator style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Ajouter materiel</div>
-                </div>
+                {
+                    JSON.parse(localStorage.getItem('user'))?.type === 'admin' &&
+                    <div className={titreElementActif === 'Ajouter materiel' ? 'actifBarreGauche' : 'barreGauche'} onClick={() => handleChangeContainer(<AddMateriel />, 'Ajouter materiel')}>
+                        <FaFile style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Ajouter materiel</div>
+                    </div>
+                }
 
                 <div className={titreElementActif === 'sortir materiel' ? 'actifBarreGauche' : 'barreGauche'} onClick={() => handleChangeContainer(<SortirMateriel />, 'sortir materiel')}>
                     <FaCalculator style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Sortie de materiel</div>
@@ -50,9 +53,11 @@ function Dashboard() {
                     <FaCalculator style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Entrée de materiel</div>
                 </div>
 
-                <div className={titreElementActif === 'Corbeilles' ? 'actifBarreGauche' : 'barreGauche'} onClick={() => handleChangeContainer("<Corbeilles />", 'Corbeilles')}>
+                {
+                    JSON.parse(localStorage.getItem('user'))?.type === 'admin' && <div className={titreElementActif === 'Corbeilles' ? 'actifBarreGauche' : 'barreGauche'} onClick={() => handleChangeContainer("<Corbeilles />", 'Corbeilles')}>
                     <FaTrash style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Corbeille</div>
                 </div>
+                }
 
                 <div className='barreGauche' style={{ position: "absolute", bottom: "20px" }}>
                     <FaSignOutAlt style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Déconnexion</div>
