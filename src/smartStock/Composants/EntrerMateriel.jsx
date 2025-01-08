@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import db from '../../firebase-config'; // Importez vos configurations Firebase
-import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, where, updateDoc, doc, addDoc } from 'firebase/firestore';
 import { FaSpinner } from 'react-icons/fa';
 
 export default function EntrerMateriel() {
@@ -44,18 +44,23 @@ export default function EntrerMateriel() {
       const materielDoc = querySnapshot.docs[0];
       const materielData = materielDoc.data();
 
-      // Vérifiez si le stock est suffisant
-      // if (materielData.stock < data.quantite) {
-      //   setErrorsMesg("Stock insuffisant !");
-      //   setIsLoading(false);
-      //   return;
-      // }
-
       // Mettez à jour le stock
       const updatedStock = parseInt(materielData.stock) + parseInt(data.quantite);
       await updateDoc(doc(db, 'materiels', materielDoc.id), { stock: updatedStock });
 
       alert('Entrée de matériel effectuée avec succès !');
+
+
+      const field = {
+        titre: data.titre,
+        quantite: data.quantite,
+        etatMateriel: data.etatMateriel,
+        dateEntree: new Date().toLocaleDateString(),
+      };
+
+      // Ajoutez le nouveau matériel à la base de données
+      await addDoc(collection(db, 'entrees'), field);
+
       setIsLoading(false);
     } catch (error) {
       console.error('Erreur lors de l\'entrée du matériel :', error);
@@ -87,13 +92,23 @@ export default function EntrerMateriel() {
       <input
         type="number"
         className={errors.quantite ? 'inputError' : 'input'}
-        placeholder="Quantité à sortir"
+        placeholder="Quantité à entrer"
         {...register("quantite", {
           required: "La quantité est obligatoire",
           min: { value: 1, message: "La quantité doit être au moins 1" },
         })}
       />
       {errors.quantite && <span className="errorMessage">{errors.quantite.message}</span>}
+
+      <input
+        type="text"
+        className={errors.etatMateriel ? 'inputError' : 'input'}
+        placeholder="Quantité à sortir"
+        {...register("etatMateriel", {
+          required: "La quantité est obligatoire",
+        })}
+      />
+      {errors.etatMateriel && <span className="errorMessage">{errors.etatMateriel.message}</span>}
 
       {/* Message d'erreur global */}
       <div style={{ backgroundColor: "red", color: "white", textAlign: "center" }}>

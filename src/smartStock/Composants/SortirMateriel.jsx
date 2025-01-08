@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import db from '../../firebase-config'; // Importez vos configurations Firebase
-import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, where, updateDoc, doc, addDoc } from 'firebase/firestore';
 import { FaSpinner } from 'react-icons/fa';
 
 export default function SortirMateriel() {
@@ -55,6 +55,19 @@ export default function SortirMateriel() {
       const updatedStock = parseInt(materielData.stock) - parseInt(data.quantite);
       await updateDoc(doc(db, 'materiels', materielDoc.id), { stock: updatedStock });
 
+      const field = {
+        titre: data.titre,
+        quantite: data.quantite,
+        nomClient: data.nomClient,
+        phone: data.phone,
+        montant: data.montant,
+        dateSortie: new Date().toLocaleDateString(),
+      };
+
+      // Ajoutez le nouveau matériel à la base de données
+      await addDoc(collection(db, 'sorties'), field);
+
+
       alert('Sortie de matériel effectuée avec succès !');
       setIsLoading(false);
     } catch (error) {
@@ -94,6 +107,36 @@ export default function SortirMateriel() {
         })}
       />
       {errors.quantite && <span className="errorMessage">{errors.quantite.message}</span>}
+
+      <input
+        type="text"
+        className={errors.nomClient ? 'inputError' : 'input'}
+        placeholder="Entrez le nom et prénoms du client"
+        {...register("nomClient", {
+          required: "Le nom du client est obligatoire",
+        })}
+      />
+      {errors.nomClient && <span className="errorMessage">{errors.nomClient.message}</span>}
+
+      <input
+        type="text"
+        className={errors.phone ? 'inputError' : 'input'}
+        placeholder="Numéro de téléphone du client"
+        {...register("phone", {
+          required: "Le numéro de téléphone est obligatoire",
+        })}
+      />
+      {errors.phone && <span className="errorMessage">{errors.phone.message}</span>}
+
+      <input
+        type="text"
+        className={errors.montant ? 'inputError' : 'input'}
+        placeholder="Le montant payé par le client"
+        {...register("montant", {
+          required: "Le montant est obligatoire",
+        })}
+      />
+      {errors.montant && <span className="errorMessage">{errors.montant.message}</span>}
 
       {/* Message d'erreur global */}
       <div style={{ backgroundColor: "red", color: "white", textAlign: "center" }}>
