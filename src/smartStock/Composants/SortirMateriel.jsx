@@ -61,11 +61,12 @@ export default function SortirMateriel() {
         nomClient: data.nomClient,
         phone: data.phone,
         montant: data.montant,
+        type: "Sortie",
         dateSortie: new Date().toLocaleDateString(),
       };
 
       // Ajoutez le nouveau matériel à la base de données
-      await addDoc(collection(db, 'sorties'), field);
+      await addDoc(collection(db, 'historiques'), field);
 
 
       alert('Sortie de matériel effectuée avec succès !');

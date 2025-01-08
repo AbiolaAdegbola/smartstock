@@ -55,11 +55,12 @@ export default function EntrerMateriel() {
         titre: data.titre,
         quantite: data.quantite,
         etatMateriel: data.etatMateriel,
+        type:"Entrée",
         dateEntree: new Date().toLocaleDateString(),
       };
 
       // Ajoutez le nouveau matériel à la base de données
-      await addDoc(collection(db, 'entrees'), field);
+      await addDoc(collection(db, 'historiques'), field);
 
       setIsLoading(false);
     } catch (error) {
@@ -68,6 +69,8 @@ export default function EntrerMateriel() {
       setIsLoading(false);
     }
   };
+
+  const listeEtat = ["Neuf", "Bon état", "Moyen", "Mauvais état", "Hors service"];
 
   return (
     <form onSubmit={handleSubmit(connexion)}>
@@ -100,14 +103,18 @@ export default function EntrerMateriel() {
       />
       {errors.quantite && <span className="errorMessage">{errors.quantite.message}</span>}
 
-      <input
-        type="text"
+      <select
         className={errors.etatMateriel ? 'inputError' : 'input'}
-        placeholder="Quantité à sortir"
         {...register("etatMateriel", {
-          required: "La quantité est obligatoire",
+          required: "Le etat du matériel est obligatoire",
         })}
-      />
+        style={{height: "60px"}}
+      >
+        <option value="">-- Sélectionnez un etat de matériel --</option>
+        {listeEtat.map((title, index) => (
+          <option key={index} value={title}>{title}</option>
+        ))}
+      </select>
       {errors.etatMateriel && <span className="errorMessage">{errors.etatMateriel.message}</span>}
 
       {/* Message d'erreur global */}
