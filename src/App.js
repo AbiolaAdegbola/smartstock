@@ -15,8 +15,8 @@ function App() {
         <Route path='/smartStock' element={<Dashboard />}/>
         <Route path='/update_materiel' element={<UpdateMateriel />}/>
         <Route path='/' element={<Connexion/>}/>
-        <Analytics/>
       </Routes>
+      <Analytics/>
     </div>
   );
 }
