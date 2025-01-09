@@ -5,6 +5,7 @@ import { FaArrowDown, FaArrowUp, FaBars, FaCalculator, FaFileInvoiceDollar, FaUs
 import { FaMessage } from 'react-icons/fa6'
 import db from '../../firebase-config'; // Assurez-vous d'importer correctement votre configuration Firebase
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import Table from 'react-bootstrap/Table';
 
 const data = [
     {
@@ -229,8 +230,12 @@ function VueDEnsemble() {
                 </div>
             </div>
 
-            <div>
+            <div>               
 
+               <div style={{ marginTop: "20px",display: "flex", justifyContent: "space-between",alignItems: "center", }}>
+               <header>
+                    <span style={{ fontSize: "30px", textTransform: "uppercase", fontWeight: "bold" }}>LISTE DES ENtrées et sorties de matériel</span>
+                </header>
                 {/* Barre de recherche */}
                 <input
                     type="text"
@@ -238,20 +243,15 @@ function VueDEnsemble() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     style={{
-                        width: '100%',
-                        padding: '10px',
-                        marginBottom: '20px',
-                        fontSize: '16px',
                         borderRadius: '5px',
                         border: '1px solid #ccc',
-                        outline: 'none'
+                        outline: 'none',
+                        padding: '5px',
+                        height: '40px',
                     }}
                 />
-
-                <header style={{ marginBottom: "15px", marginTop: "20px" }}>
-                    <span style={{ fontSize: "30px", textTransform: "uppercase", fontWeight: "bold" }}>LISTE DES ENtrées et sorties de matériel</span><br />
-                </header>
-                <table className="responsive-table" style={{ width: "101.5%", fontSize: "13px" }}>
+               </div>
+                <Table style={{ width: "101.5%", }}>
                     <thead>
                         <tr>
                             <th>Client</th>
@@ -287,7 +287,7 @@ function VueDEnsemble() {
                         }
 
                     </tbody>
-                </table>
+                </Table>
             </div>
 
         </div>

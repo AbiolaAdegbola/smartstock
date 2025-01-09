@@ -66,9 +66,7 @@ function Dashboard() {
                     }}>Déconnexion</div>
                 </div>
 
-                {/* <div style={{ position: "absolute", bottom: "0px", fontSize: "12px", display: "flex", justifyContent: "center" }}>
-    Ivoire Booking
-</div> */}
+
             </div>
             {/* fin barre de menu a gauche */}
             <div style={{ marginLeft: "280px", marginRight: "10px", paddingTop: "50px", backgroundColor: "#F4F5F7", height: "100vh" }} >
