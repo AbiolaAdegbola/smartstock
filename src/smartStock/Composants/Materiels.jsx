@@ -43,6 +43,7 @@ function Materiels() {
     };
 
     fetchMateriels(); // Appel de la fonction pour récupérer les matériels
+    
   }, []); // Le tableau vide signifie que l'effet s'exécutera une seule fois au montage du composant
 
   // Filtrer les matériels en fonction du texte de recherche

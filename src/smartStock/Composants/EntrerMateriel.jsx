@@ -56,7 +56,7 @@ export default function EntrerMateriel() {
         quantite: data.quantite,
         etatMateriel: data.etatMateriel,
         type:"Entrée",
-        dateEntree: new Date().toLocaleDateString(),
+        createdAt: new Date().toLocaleDateString(),
       };
 
       // Ajoutez le nouveau matériel à la base de données

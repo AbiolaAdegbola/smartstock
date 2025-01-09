@@ -62,7 +62,7 @@ export default function SortirMateriel() {
         phone: data.phone,
         montant: data.montant,
         type: "Sortie",
-        dateSortie: new Date().toLocaleDateString(),
+        createdAt: new Date().toLocaleDateString(),
       };
 
       // Ajoutez le nouveau matériel à la base de données

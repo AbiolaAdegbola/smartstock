@@ -1,5 +1,9 @@
+import { collection, getDocs } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import ContentLoader from 'react-content-loader';
 import { FaArrowDown, FaArrowUp, FaBars, FaCalculator, FaFileInvoiceDollar, FaUser } from 'react-icons/fa'
 import { FaMessage } from 'react-icons/fa6'
+import db from '../../firebase-config'; // Assurez-vous d'importer correctement votre configuration Firebase
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const data = [
@@ -47,8 +51,54 @@ const data = [
     },
 ];
 
+
+// Squelette de chargement
+const SkeletonLoader = () => (
+    <ContentLoader
+        width="100%"
+        height={230}
+        backgroundColor="#f3f3f3"
+        foregroundColor="#ecebeb"
+    >
+        <rect x="0" y="0" rx="8" ry="8" width="100%" height="120" />
+        <rect x="0" y="130" rx="5" ry="5" width="60%" height="20" />
+        <rect x="0" y="160" rx="5" ry="5" width="30%" height="20" />
+    </ContentLoader>
+);
+
 function VueDEnsemble() {
 
+    const [materiels, setMateriels] = useState([])
+    const [isLoading, setIsLoading] = useState(true); // État pour le chargement des données
+    const [searchTerm, setSearchTerm] = useState(""); // État pour la recherche
+
+
+    // Utilisez useEffect pour récupérer les matériels à chaque fois que le composant se monte
+    useEffect(() => {
+        const fetchMateriels = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'historiques')); // Récupère tous les matériels de la collection "materiels"
+                const materielsData = querySnapshot.docs.map(doc => ({
+                    id: doc.id, // Ajoutez l'ID du document pour des opérations futures (supprimer, modifier, etc.)
+                    ...doc.data(), // Récupère les données du document
+                }));
+                setMateriels(materielsData); // Mettez à jour l'état avec les données récupérées
+                setIsLoading(false); // Les données ont été chargées, on arrête le chargement
+            } catch (error) {
+                console.error("Erreur lors de la récupération des matériels :", error);
+                setIsLoading(false); // En cas d'erreur, arrêter également le chargement
+            }
+        };
+
+        fetchMateriels(); // Appel de la fonction pour récupérer les matériels
+
+    }, []); // Le tableau vide signifie que l'effet s'exécutera une seule fois au montage du composant
+
+
+    // Filtrer les matériels en fonction du texte de recherche
+    const filteredMateriels = materiels.filter(materiel =>
+        materiel.titre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <div>
@@ -180,30 +230,61 @@ function VueDEnsemble() {
             </div>
 
             <div>
+
+                {/* Barre de recherche */}
+                <input
+                    type="text"
+                    placeholder="Rechercher un matériel..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{
+                        width: '100%',
+                        padding: '10px',
+                        marginBottom: '20px',
+                        fontSize: '16px',
+                        borderRadius: '5px',
+                        border: '1px solid #ccc',
+                        outline: 'none'
+                    }}
+                />
+
                 <header style={{ marginBottom: "15px", marginTop: "20px" }}>
                     <span style={{ fontSize: "30px", textTransform: "uppercase", fontWeight: "bold" }}>LISTE DES ENtrées et sorties de matériel</span><br />
                 </header>
                 <table className="responsive-table" style={{ width: "101.5%", fontSize: "13px" }}>
                     <thead>
                         <tr>
-                            <th scope="col">Client</th>
-                            <th scope="col">Objet</th>
-                            <th scope="col" >Total HT </th>
-                            <th scope="col">Total HTpayer</th>
-                            <th scope="col">Date de sorties</th>
-                            <th scope="col">Nombre de jours</th>
-                            </tr>
+                            <th>Client</th>
+                            <th>Téléphone</th>
+                            <th >Matériel </th>
+                            <th >Quantité </th>
+                            <th>Montant</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                        </tr>
                     </thead>
                     <tbody>
 
-                        <tr variant="primary" >
-                            <th scope="row" data-title="Client" >{""}</th>
-                            <td data-title="Objet" >{""}</td>
-                            <td data-title="Montant HT" data-type="currency">{"data.montantHT"}</td>
-                            <td data-title="Montant à réglé" data-type="currency">{"data.montantHT"}</td>
-                            <td data-title="Date d'échéance" data-type="currency">{"data.echeance"}</td>
-                            <td data-title="Date de fin" data-type="currency">{"data.date_fin"}</td>
-                        </tr>
+                        {
+                            isLoading ? (
+                                <tr>
+                                    <td colSpan="6">
+                                        <SkeletonLoader />
+                                    </td>
+                                </tr>
+                            ) :
+                                filteredMateriels.map((data, index) => (
+                                    <tr key={index} >
+                                        <th>{data.nomClient}</th>
+                                        <td>{data.phone}</td>
+                                        <td>{data.titre}</td>
+                                        <td>{data.quantite}</td>
+                                        <td>{data.montant}</td>
+                                        <td>{data.type}</td>
+                                        <td>{data.createdAt}</td>
+                                    </tr>
+                                ))
+                        }
 
                     </tbody>
                 </table>
