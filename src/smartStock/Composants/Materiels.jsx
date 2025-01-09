@@ -120,13 +120,20 @@ function Materiels() {
 
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <div> <span>Stock : </span> <span>{materiel.stock}</span></div>
-                  <div>
-                    <FaPencilAlt style={{ color: "blue", marginRight: "30px", cursor:"pointer" }} onClick={() => navigate("/update_materiel", {state: {materiel: materiel}})} />
-                    <FaTrashAlt 
-                      style={{ color: "red", cursor: "pointer" }} 
-                      onClick={() => handleDeleteMateriel(materiel.id)} // Appeler handleDeleteMateriel avec l'ID du matériel
-                    />
-                  </div>
+                  {
+                    JSON.parse(localStorage.getItem('user'))?.type === 'admin' && (
+                      <div style={{ display: "flex" }}>
+                        <FaPencilAlt 
+                          style={{ color: "blue", cursor: "pointer" }} 
+                          onClick={() => navigate(`/update_materiel/${materiel.id}`)} 
+                        />
+                        <FaTrashAlt 
+                          style={{ color: "red", cursor: "pointer", marginLeft: "10px" }} 
+                          onClick={() => handleDeleteMateriel(materiel.id)} 
+                        />
+                      </div>
+                    )
+                  }
                 </div>
                 <div style={{ marginTop: "10px" }}>
                   <span>Etat : </span>
