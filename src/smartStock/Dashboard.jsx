@@ -60,7 +60,10 @@ function Dashboard() {
                 }
 
                 <div className='barreGauche' style={{ position: "absolute", bottom: "20px" }}>
-                    <FaSignOutAlt style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Déconnexion</div>
+                    <FaSignOutAlt style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }} onClick={() =>{
+                        localStorage.removeItem("user")
+                        window.location.href = "/"
+                    }}>Déconnexion</div>
                 </div>
 
                 {/* <div style={{ position: "absolute", bottom: "0px", fontSize: "12px", display: "flex", justifyContent: "center" }}>
