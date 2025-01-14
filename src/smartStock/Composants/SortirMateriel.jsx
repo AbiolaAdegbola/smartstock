@@ -62,6 +62,7 @@ export default function SortirMateriel() {
         phone: data.phone,
         montant: data.montant,
         type: "Sortie",
+        destination: data.destination,
         createdAt: new Date().toLocaleDateString(),
       };
 
@@ -138,6 +139,16 @@ export default function SortirMateriel() {
         })}
       />
       {errors.montant && <span className="errorMessage">{errors.montant.message}</span>}
+
+      <input
+        type="text"
+        className={errors.destination ? 'inputError' : 'input'}
+        placeholder="Le destination des matériels"
+        {...register("destination", {
+          required: "Le destination est obligatoire",
+        })}
+      />
+      {errors.destination && <span className="errorMessage">{errors.destination.message}</span>}
 
       {/* Message d'erreur global */}
       <div style={{ backgroundColor: "red", color: "white", textAlign: "center" }}>
