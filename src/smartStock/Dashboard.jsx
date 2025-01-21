@@ -6,6 +6,7 @@ import '../styles/dashboard/dashboard.css'
 import AddMateriel from './AddMateril';
 import EntrerMateriel from './Composants/EntrerMateriel';
 import SortirMateriel from './Composants/SortirMateriel';
+import logo from '../assets/logo.png'
 
 
 function Dashboard() {
@@ -25,6 +26,8 @@ function Dashboard() {
             <div style={{ position: "fixed", height: "100vh", minWidth: "268px", maxWidth: "268px", top: "0px", zIndex: 99, backgroundColor: "white" }}>
 
                 <div style={{ fontSize: "30px", textTransform: "uppercase", fontWeight: "bold", marginTop:"30px", textAlign: "center" }}>
+                    <img src={logo} alt="logo" width={200} height={140} /><br />
+
                     Smart Stock
                 </div>
                 <div style={{ marginTop: "50px" }}>
