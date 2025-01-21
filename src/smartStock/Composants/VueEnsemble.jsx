@@ -1,57 +1,38 @@
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import ContentLoader from 'react-content-loader';
-import { FaArrowDown, FaArrowUp, FaBars, FaCalculator, FaFileInvoiceDollar, FaUser } from 'react-icons/fa'
-import { FaMessage } from 'react-icons/fa6'
+import { FaBars, FaCalculator, FaUser } from 'react-icons/fa'
 import db from '../../firebase-config'; // Assurez-vous d'importer correctement votre configuration Firebase
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import Table from 'react-bootstrap/Table';
 
-const data = [
-    {
-        name: 'Janvier',
-        uv: 4000,
-        pv: 2400,
-        amt: 2400,
-    },
-    {
-        name: 'Fevrier',
-        uv: 3000,
-        pv: 1398,
-        amt: 2210,
-    },
-    {
-        name: 'Mars',
-        uv: 2000,
-        pv: 9800,
-        amt: 2290,
-    },
-    {
-        name: 'Avril',
-        uv: 2780,
-        pv: 3908,
-        amt: 2000,
-    },
-    {
-        name: 'Mai',
-        uv: 1890,
-        pv: 4800,
-        amt: 2181,
-    },
-    {
-        name: 'Juin',
-        uv: 2390,
-        pv: 3800,
-        amt: 2500,
-    },
-    {
-        name: 'Juillet',
-        uv: 3490,
-        pv: 4300,
-        amt: 2100,
-    },
-];
+// Fonction pour regrouper et traiter les données
+function processData(historiques) {
+    const monthlyData = {};
 
+    historiques.forEach((item) => {
+
+        const [day, month, year] = item.createdAt.split("/").map(Number); // Sépare les parties de la date
+        const date = new Date(year, month - 1, day); // Convertit la chaîne en date
+        const monthName = date.toLocaleString("fr-FR", { month: "long" }); // Extrait le nom du mois
+        const type = item.type;
+        // console.log(date)
+        const quantite = parseInt(item.quantite, 10); // Convertit la quantité en nombre
+
+        if (!monthlyData[monthName]) {
+            monthlyData[monthName] = { name: monthName, Entrée: 0, Sortie: 0 };
+        }
+
+        if (type === "Entrée") {
+            monthlyData[monthName].Entrée += quantite;
+        } else if (type === "Sortie") {
+            monthlyData[monthName].Sortie += quantite;
+        }
+    });
+
+    // Convertit l'objet en tableau trié par mois
+    return Object.values(monthlyData);
+}
 
 // Squelette de chargement
 const SkeletonLoader = () => (
@@ -72,7 +53,9 @@ function VueDEnsemble() {
     const [materiels, setMateriels] = useState([])
     const [isLoading, setIsLoading] = useState(true); // État pour le chargement des données
     const [searchTerm, setSearchTerm] = useState(""); // État pour la recherche
-
+    const [data, setData] = useState([]); // État pour stocker les données traitées
+    const [total, setTotal] = useState(0); // État pour stocker le total des matériels
+    const [sortieTotal, setSortieTotal] = useState(0)
 
     // Utilisez useEffect pour récupérer les matériels à chaque fois que le composant se monte
     useEffect(() => {
@@ -94,6 +77,47 @@ function VueDEnsemble() {
         fetchMateriels(); // Appel de la fonction pour récupérer les matériels
 
     }, []); // Le tableau vide signifie que l'effet s'exécutera une seule fois au montage du composant
+
+    useEffect(() => {
+        const produitsCollection = collection(db, "materiels"); // Référence à la collection "produits"
+
+        // Écoute les changements en temps réel dans la collection
+        const unsubscribe = onSnapshot(produitsCollection, (snapshot) => {
+            setTotal(snapshot.size); // Le nombre de documents dans la collection
+        });
+
+        // Nettoyage à la fin du cycle de vie du composant
+        return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+
+        const historiquesCollection = collection(db, "historiques");
+
+        // Écoute les changements en temps réel
+        const unsubscribe = onSnapshot(historiquesCollection, (snapshot) => {
+            const historiques = snapshot.docs.map((doc) => doc.data());
+            const processedData = processData(historiques);
+            setData(processedData);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        const historiqueCollection = collection(db, "historiques");
+
+        // Crée une requête pour les documents où le type est "Sortie"
+        const sortieQuery = query(historiqueCollection, where("type", "==", "Sortie"));
+
+        // Écoute les changements en temps réel
+        const unsubscribe = onSnapshot(sortieQuery, (snapshot) => {
+            setSortieTotal(snapshot.size); // Le nombre de documents correspondant
+        });
+
+        // Nettoyage à la fin du cycle de vie du composant
+        return () => unsubscribe();
+    }, []);
 
 
     // Filtrer les matériels en fonction du texte de recherche
@@ -118,32 +142,6 @@ function VueDEnsemble() {
                         <br />
 
                     </div>
-
-                    {/* section 2 hearder */}
-                    <div style={{ marginTop: "20px", width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "52vh", padding: "20px" }}>
-                        <h6>Statistique de location de matériel mensuel</h6>
-                        <ResponsiveContainer width="100%" height="95%">
-                            <LineChart
-                                width={500}
-                                height={300}
-                                data={data}
-                                margin={{
-                                    top: 5,
-                                    right: 5,
-                                    left: 0,
-                                    bottom: 5,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                                <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
                 </div>
                 <div className='col-lg-4'>
                     <div className='row'>
@@ -157,7 +155,7 @@ function VueDEnsemble() {
                                 <div style={{ marginTop: "20px" }}>
                                     <div style={{ backgroundColor: "goldenrod", color: "white", width: "50px", textAlign: "center", padding: "5px", borderRadius: "5px" }}><FaUser style={{ fontSize: "23px" }} /></div>
                                     <div style={{ fontSize: "32px", marginLeft: "20px", marginTop: "10px" }}>
-                                        235
+                                        {total ? total : 0} {/* Affiche le total des matériels */}
                                     </div>
                                 </div>
                             </div>
@@ -172,86 +170,85 @@ function VueDEnsemble() {
                                 <div style={{ marginTop: "20px" }}>
                                     <div style={{ backgroundColor: "goldenrod", color: "white", width: "50px", textAlign: "center", padding: "5px", borderRadius: "5px" }}><FaCalculator style={{ fontSize: "23px" }} /></div>
                                     <div style={{ fontSize: "32px", marginLeft: "20px", marginTop: "10px" }}>
-                                        34
+                                        {sortieTotal ? sortieTotal : 0} {/* Affiche le total des sorties */}
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    {/* section 2 */}
-                    <div className='row' style={{ marginTop: "20px" }}>
-                        <div className='col-lg-6'>
-                            <div style={{ width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "26vh", padding: "20px" }}>
-                                <h6 style={{ fontSize: "14px", display: "flex", justifyContent: "space-between" }}>
-                                    <span>Matériel loué</span>
-                                    <span><FaBars /></span>
-                                </h6>
-
-                                <div style={{ marginTop: "20px" }}>
-                                    <div style={{ backgroundColor: "goldenrod", color: "white", width: "50px", textAlign: "center", padding: "5px", borderRadius: "5px" }}><FaFileInvoiceDollar style={{ fontSize: "23px" }} /></div>
-                                    <div style={{ fontSize: "32px", marginLeft: "20px", marginTop: "10px" }}>
-                                        189
-                                    </div>
-
-                                    <div style={{ marginTop: "10px", display: "flex", alignItems: "center", color: "green", fontSize: "14px" }}>
-                                        <FaArrowUp /> <span style={{ marginLeft: "10px" }}>18%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col-lg-6'>
-                            <div style={{ width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "26vh", padding: "20px" }}>
-                                <h6 style={{ fontSize: "14px", display: "flex", justifyContent: "space-between" }}>
-                                    <span>Materiel desfuctueuses</span>
-                                    {/* <span><FaBars /></span> */}
-                                </h6>
-
-                                <div style={{ marginTop: "20px" }}>
-                                    <div style={{ backgroundColor: "goldenrod", color: "white", width: "50px", textAlign: "center", padding: "5px", borderRadius: "5px" }}><FaMessage style={{ fontSize: "23px" }} /></div>
-                                    <div style={{ fontSize: "25px", marginLeft: "20px", marginTop: "10px" }}>
-                                        43
-                                    </div>
-                                    <div style={{ marginTop: "5px", display: "flex", alignItems: "center", color: "red", fontSize: "14px" }}>
-                                        <FaArrowDown /> <span style={{ marginLeft: "10px" }}>- 23%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* section 3 */}
-                    <div style={{ width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "20vh", marginTop: "20px", padding: "20px" }}>
-                        <h6>Promo spécial</h6>
-                        <div>
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quas repellat dignissimos voluptates veritatis vero doloremque odit neque
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div>               
+            <div>
+                {/* section 2 hearder */}
+                <div style={{ marginTop: "20px", width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "52vh", padding: "20px" }}>
+                    <h6>Statistique de location de matériel mensuel</h6>
+                    {/* <ResponsiveContainer width="100%" height="95%">
+                        <LineChart
+                            width={500}
+                            height={300}
+                            data={data}
+                            margin={{
+                                top: 5,
+                                right: 5,
+                                left: 0,
+                                bottom: 5,
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
+                            <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+                        </LineChart>
+                    </ResponsiveContainer> */}
+                    <ResponsiveContainer width="100%" height="95%">
+  <BarChart
+    width={500}
+    height={300}
+    data={data}
+    margin={{
+      top: 5,
+      right: 5,
+      left: 0,
+      bottom: 5,
+    }}
+  >
+    <CartesianGrid strokeDasharray="3 3" />
+    <XAxis dataKey="name" />
+    <YAxis />
+    <Tooltip />
+    <Legend />
+    <Bar dataKey="Sortie" fill="#8884d8" /> {/* Barres pour les données "pv" */}
+    <Bar dataKey="Entrée" fill="#82ca9d" /> {/* Barres pour les données "uv" */}
+  </BarChart>
+</ResponsiveContainer>
+                </div>
+            </div>
 
-               <div style={{ marginTop: "20px",display: "flex", justifyContent: "space-between",alignItems: "center", }}>
-               <header>
-                    <span style={{ fontSize: "30px", textTransform: "uppercase", fontWeight: "bold" }}>LISTE DES ENtrées et sorties de matériel</span>
-                </header>
-                {/* Barre de recherche */}
-                <input
-                    type="text"
-                    placeholder="Rechercher un matériel..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{
-                        borderRadius: '5px',
-                        border: '1px solid #ccc',
-                        outline: 'none',
-                        padding: '5px',
-                        height: '40px',
-                    }}
-                />
-               </div>
-                <Table style={{ width: "101.5%", }}>
+            <div>
+
+                <div style={{ marginTop: "20px", display: "flex", alignItems: "center", }}>
+                    <span style={{ fontSize: "25px", textTransform: "uppercase", fontWeight: "bold" }}>LISTE DES ENtrées et sorties de matériel</span>
+                    {/* Barre de recherche */}
+                    <input
+                        type="text"
+                        placeholder="Rechercher un matériel..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            borderRadius: '5px',
+                            border: '1px solid #ccc',
+                            outline: 'none',
+                            padding: '2px',
+                            height: '30px',
+                            marginLeft: '5px',
+                        }}
+                    />
+                </div>
+                <Table bordered hover responsive> {/* Tableau pour afficher les matériels */}
                     <thead>
                         <tr>
                             <th>Client</th>

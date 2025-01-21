@@ -105,8 +105,8 @@ function Materiels() {
           // Parcourez les matériels filtrés et affichez chaque matériel dans une colonne
           filteredMateriels.map((materiel) => (
             <div key={materiel.id} className='col-lg-4'>
-              <div style={{ width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "38vh", padding: "20px", margin: "10px 0" }}>
-                <img 
+              <div style={{ width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "30vh", padding: "20px", margin: "10px 0" }}>
+                {/* <img 
                   src={materiel.imageUrl || ""} 
                   alt={materiel.titre} 
                   style={{ 
@@ -115,8 +115,8 @@ function Materiels() {
                     maxHeight: "100px", 
                     objectFit: "cover" 
                   }} 
-                />
-                <h6>{materiel.titre}</h6>
+                /> */}
+                <h4>{materiel.titre}</h4>
 
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <div> <span>Stock : </span> <span>{materiel.stock}</span></div>
