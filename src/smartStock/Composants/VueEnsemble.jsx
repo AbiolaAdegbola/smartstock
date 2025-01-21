@@ -1,10 +1,12 @@
 import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import ContentLoader from 'react-content-loader';
-import { FaBars, FaCalculator, FaUser } from 'react-icons/fa'
+import { FaBars, FaCalculator, FaPrint, FaSpinner, FaUser } from 'react-icons/fa'
 import db from '../../firebase-config'; // Assurez-vous d'importer correctement votre configuration Firebase
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import Table from 'react-bootstrap/Table';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import Recupdf from './Recupdf';
 
 // Fonction pour regrouper et traiter les données
 function processData(historiques) {
@@ -125,6 +127,40 @@ function VueDEnsemble() {
         materiel.titre.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+
+    const receiptData = {
+        receiptNumber: "001",
+        date: "21/01/2025",
+        clientName: "Jean Dupont",
+        clientContact: "0707070707",
+        rentals: [
+            {
+                material: "Chaise",
+                unitPrice: 500,
+                quantity: 10,
+                dailyPrice: 5000,
+                startDate: "20/01/2025",
+                endDate: "21/01/2025",
+                days: 1,
+                totalPrice: 5000,
+            },
+            {
+                material: "Bâche",
+                unitPrice: 10000,
+                quantity: 2,
+                dailyPrice: 20000,
+                startDate: "20/01/2025",
+                endDate: "21/01/2025",
+                days: 1,
+                totalPrice: 20000,
+            },
+        ],
+        discount: 10,
+        total: 22500,
+        paymentMethod: "Espèces",
+    };
+
+
     return (
         <div>
 
@@ -183,8 +219,9 @@ function VueDEnsemble() {
                 {/* section 2 hearder */}
                 <div style={{ marginTop: "20px", width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "52vh", padding: "20px" }}>
                     <h6>Statistique de location de matériel mensuel</h6>
-                    {/* <ResponsiveContainer width="100%" height="95%">
-                        <LineChart
+
+                    <ResponsiveContainer width="100%" height="95%">
+                        <BarChart
                             width={500}
                             height={300}
                             data={data}
@@ -200,31 +237,10 @@ function VueDEnsemble() {
                             <YAxis />
                             <Tooltip />
                             <Legend />
-                            <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                            <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                        </LineChart>
-                    </ResponsiveContainer> */}
-                    <ResponsiveContainer width="100%" height="95%">
-  <BarChart
-    width={500}
-    height={300}
-    data={data}
-    margin={{
-      top: 5,
-      right: 5,
-      left: 0,
-      bottom: 5,
-    }}
-  >
-    <CartesianGrid strokeDasharray="3 3" />
-    <XAxis dataKey="name" />
-    <YAxis />
-    <Tooltip />
-    <Legend />
-    <Bar dataKey="Sortie" fill="#8884d8" /> {/* Barres pour les données "pv" */}
-    <Bar dataKey="Entrée" fill="#82ca9d" /> {/* Barres pour les données "uv" */}
-  </BarChart>
-</ResponsiveContainer>
+                            <Bar dataKey="Sortie" fill="#8884d8" /> {/* Barres pour les données "pv" */}
+                            <Bar dataKey="Entrée" fill="#82ca9d" /> {/* Barres pour les données "uv" */}
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
             </div>
 
@@ -258,6 +274,7 @@ function VueDEnsemble() {
                             <th>Montant</th>
                             <th>Type</th>
                             <th>Date</th>
+                            <th>pdf</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -279,6 +296,14 @@ function VueDEnsemble() {
                                         <td>{data.montant}</td>
                                         <td>{data.type}</td>
                                         <td>{data.createdAt}</td>
+                                        <td>
+                                            <PDFDownloadLink
+                                                document={<Recupdf data={receiptData} />}
+                                                fileName="recu_paiement.pdf"
+                                            >
+                                                {({ loading }) => (loading ? <FaSpinner /> : <FaPrint />)}
+                                            </PDFDownloadLink>
+                                        </td>
                                     </tr>
                                 ))
                         }
