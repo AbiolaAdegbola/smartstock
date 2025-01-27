@@ -1,4 +1,4 @@
-import {  FaCalculator, FaFile, FaSignOutAlt, FaStackOverflow, FaTrash, } from 'react-icons/fa'
+import { FaCalculator, FaFile, FaSignOutAlt, FaStackOverflow, } from 'react-icons/fa'
 import VueDEnsemble from './Composants/VueEnsemble';
 import { useState } from 'react';
 import Materiels from './Composants/Materiels';
@@ -25,12 +25,11 @@ function Dashboard() {
             {/* barre de menu a gauche */}
             <div style={{ position: "fixed", height: "100vh", minWidth: "268px", maxWidth: "268px", top: "0px", zIndex: 99, backgroundColor: "white" }}>
 
-                <div style={{ fontSize: "30px", textTransform: "uppercase", fontWeight: "bold", marginTop:"30px", textAlign: "center" }}>
-                    <img src={logo} alt="logo" width={200} height={140} /><br />
-
+                <div style={{ fontSize: "30px", textTransform: "uppercase", fontWeight: "bold", marginTop: "10px", textAlign: "center" }}>
+                    <img src={logo} alt="logo" style={{height:"200px", width:"100%"}} /><br />
                     Smart Stock
                 </div>
-                <div style={{ marginTop: "50px" }}>
+                <div style={{ marginTop: "20px" }}>
 
                 </div>
                 <div onClick={() => handleChangeContainer(<VueDEnsemble />, "Vue d'ensemble")} className={titreElementActif === "Vue d'ensemble" ? 'actifBarreGauche' : 'barreGauche'}>
@@ -56,14 +55,14 @@ function Dashboard() {
                     <FaCalculator style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Entrée de materiel</div>
                 </div>
 
-                {
+                {/* {
                     JSON.parse(localStorage.getItem('user'))?.type === 'admin' && <div className={titreElementActif === 'Corbeilles' ? 'actifBarreGauche' : 'barreGauche'} onClick={() => handleChangeContainer("<Corbeilles />", 'Corbeilles')}>
-                    <FaTrash style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Corbeille</div>
-                </div>
-                }
+                        <FaTrash style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Corbeille</div>
+                    </div>
+                } */}
 
                 <div className='barreGauche' style={{ position: "absolute", bottom: "20px" }}>
-                    <FaSignOutAlt style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }} onClick={() =>{
+                    <FaSignOutAlt style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }} onClick={() => {
                         localStorage.removeItem("user")
                         window.location.href = "/"
                     }}>Déconnexion</div>

@@ -146,7 +146,7 @@ function Materiels() {
                 </div>
                 <div style={{ marginTop: "15px" }}>
                   <span>Commentaire</span>
-                  <div style={{ fontSize: "14px", color: "#666" }}>{materiel.commentaire || 'Aucun commentaire'}</div>
+                  <div style={{ fontSize: "14px", color: "#666" }}>{materiel.comment || 'Aucun commentaire'}</div>
                 </div>
               </div>
             </div>

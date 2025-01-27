@@ -4,7 +4,8 @@ import { useForm } from 'react-hook-form';
 import db from '../firebase-config'; // Assurez-vous que votre configuration Firebase est correcte
 import { collection, query, where, getDocs } from 'firebase/firestore'; // Importez les méthodes nécessaires de Firestore
 import { useState } from 'react';
-import { FaSpinner } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import { Spinner } from 'react-bootstrap';
 
 const Connexion = () => {
 
@@ -40,6 +41,7 @@ const Connexion = () => {
       }
 
       console.log('Utilisateur connecté:', user );
+      toast.success("Vous êtes connecté")
 
       localStorage.setItem('user', JSON.stringify(user)); // Enregistrer l'utilisateur dans le stockage local
 
@@ -75,7 +77,6 @@ const Connexion = () => {
                 }
               })}
             />
-            {errors.mail && <p className='errorMessage'>{errors.mail.message}</p>}
 
             <input
               type="password"
@@ -89,14 +90,13 @@ const Connexion = () => {
                 }
               })}
             />
-            {errors.mdpLogin && <p className='errorMessage'>{errors.mdpLogin.message}</p>}
 
             {/* Affichage des messages d'erreur liés à la connexion */}
             {errorMsg && <p className='errorMessage'>{errorMsg}</p>}
 
             <button className='button'>
               {
-                isLoading ? <FaSpinner/> : "S'identifier"
+                isLoading ? <Spinner size='sm'/> : "S'identifier"
               }
             </button>
           </form>

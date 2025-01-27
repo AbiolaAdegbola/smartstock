@@ -5,6 +5,7 @@ import Dashboard from './smartStock/Dashboard';
 import Connexion from './smartStock/Connexion';
 import UpdateMateriel from './smartStock/UpdateMateriel';
 import { Analytics } from "@vercel/analytics/react"
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {

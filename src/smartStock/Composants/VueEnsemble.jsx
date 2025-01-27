@@ -9,32 +9,32 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import Recupdf from './Recupdf';
 
 // Fonction pour regrouper et traiter les données
-function processData(historiques) {
-    const monthlyData = {};
+// function processData(historiques) {
+//     const monthlyData = {};
 
-    historiques.forEach((item) => {
+//     historiques.forEach((item) => {
 
-        const [day, month, year] = item.createdAt.split("/").map(Number); // Sépare les parties de la date
-        const date = new Date(year, month - 1, day); // Convertit la chaîne en date
-        const monthName = date.toLocaleString("fr-FR", { month: "long" }); // Extrait le nom du mois
-        const type = item.type;
-        // console.log(date)
-        const quantite = parseInt(item.quantite, 10); // Convertit la quantité en nombre
+//         const [day, month, year] = item.createdAt.split("/").map(Number); // Sépare les parties de la date
+//         const date = new Date(year, month - 1, day); // Convertit la chaîne en date
+//         const monthName = date.toLocaleString("fr-FR", { month: "long" }); // Extrait le nom du mois
+//         const type = item.type;
+//         // console.log(date)
+//         const quantite = parseInt(item.quantite, 10); // Convertit la quantité en nombre
 
-        if (!monthlyData[monthName]) {
-            monthlyData[monthName] = { name: monthName, Entrée: 0, Sortie: 0 };
-        }
+//         if (!monthlyData[monthName]) {
+//             monthlyData[monthName] = { name: monthName, Entrée: 0, Sortie: 0 };
+//         }
 
-        if (type === "Entrée") {
-            monthlyData[monthName].Entrée += quantite;
-        } else if (type === "Sortie") {
-            monthlyData[monthName].Sortie += quantite;
-        }
-    });
+//         if (type === "Entrée") {
+//             monthlyData[monthName].Entrée += quantite;
+//         } else if (type === "Sortie") {
+//             monthlyData[monthName].Sortie += quantite;
+//         }
+//     });
 
-    // Convertit l'objet en tableau trié par mois
-    return Object.values(monthlyData);
-}
+//     // Convertit l'objet en tableau trié par mois
+//     return Object.values(monthlyData);
+// }
 
 // Squelette de chargement
 const SkeletonLoader = () => (
@@ -55,7 +55,7 @@ function VueDEnsemble() {
     const [materiels, setMateriels] = useState([])
     const [isLoading, setIsLoading] = useState(true); // État pour le chargement des données
     const [searchTerm, setSearchTerm] = useState(""); // État pour la recherche
-    const [data, setData] = useState([]); // État pour stocker les données traitées
+    // const [data, setData] = useState([]); // État pour stocker les données traitées
     const [total, setTotal] = useState(0); // État pour stocker le total des matériels
     const [sortieTotal, setSortieTotal] = useState(0)
 
@@ -92,19 +92,19 @@ function VueDEnsemble() {
         return () => unsubscribe();
     }, []);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const historiquesCollection = collection(db, "historiques");
+    //     const historiquesCollection = collection(db, "historiques");
 
-        // Écoute les changements en temps réel
-        const unsubscribe = onSnapshot(historiquesCollection, (snapshot) => {
-            const historiques = snapshot.docs.map((doc) => doc.data());
-            const processedData = processData(historiques);
-            setData(processedData);
-        });
+    //     // Écoute les changements en temps réel
+    //     const unsubscribe = onSnapshot(historiquesCollection, (snapshot) => {
+    //         const historiques = snapshot.docs.map((doc) => doc.data());
+    //         const processedData = processData(historiques);
+    //         setData(processedData);
+    //     });
 
-        return () => unsubscribe();
-    }, []);
+    //     return () => unsubscribe();
+    // }, []);
 
     useEffect(() => {
         const historiqueCollection = collection(db, "historiques");
@@ -124,41 +124,41 @@ function VueDEnsemble() {
 
     // Filtrer les matériels en fonction du texte de recherche
     const filteredMateriels = materiels.filter(materiel =>
-        materiel.titre.toLowerCase().includes(searchTerm.toLowerCase())
+        materiel?.nomClient?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
 
-    const receiptData = {
-        receiptNumber: "001",
-        date: "21/01/2025",
-        clientName: "Jean Dupont",
-        clientContact: "0707070707",
-        rentals: [
-            {
-                material: "Chaise",
-                unitPrice: 500,
-                quantity: 10,
-                dailyPrice: 5000,
-                startDate: "20/01/2025",
-                endDate: "21/01/2025",
-                days: 1,
-                totalPrice: 5000,
-            },
-            {
-                material: "Bâche",
-                unitPrice: 10000,
-                quantity: 2,
-                dailyPrice: 20000,
-                startDate: "20/01/2025",
-                endDate: "21/01/2025",
-                days: 1,
-                totalPrice: 20000,
-            },
-        ],
-        discount: 10,
-        total: 22500,
-        paymentMethod: "Espèces",
-    };
+    // const receiptData = {
+    //     receiptNumber: "001",
+    //     date: "21/01/2025",
+    //     clientName: "Jean Dupont",
+    //     clientContact: "0707070707",
+    //     rentals: [
+    //         {
+    //             material: "Chaise",
+    //             unitPrice: 500,
+    //             quantity: 10,
+    //             dailyPrice: 5000,
+    //             startDate: "20/01/2025",
+    //             endDate: "21/01/2025",
+    //             days: 1,
+    //             totalPrice: 5000,
+    //         },
+    //         {
+    //             material: "Bâche",
+    //             unitPrice: 10000,
+    //             quantity: 2,
+    //             dailyPrice: 20000,
+    //             startDate: "20/01/2025",
+    //             endDate: "21/01/2025",
+    //             days: 1,
+    //             totalPrice: 20000,
+    //         },
+    //     ],
+    //     discount: 10,
+    //     total: 22500,
+    //     paymentMethod: "Espèces",
+    // };
 
 
     return (
@@ -215,8 +215,7 @@ function VueDEnsemble() {
                 </div>
             </div>
 
-            <div>
-                {/* section 2 hearder */}
+            {/* <div>
                 <div style={{ marginTop: "20px", width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "52vh", padding: "20px" }}>
                     <h6>Statistique de location de matériel mensuel</h6>
 
@@ -237,12 +236,12 @@ function VueDEnsemble() {
                             <YAxis />
                             <Tooltip />
                             <Legend />
-                            <Bar dataKey="Sortie" fill="#8884d8" /> {/* Barres pour les données "pv" */}
-                            <Bar dataKey="Entrée" fill="#82ca9d" /> {/* Barres pour les données "uv" */}
+                            <Bar dataKey="Sortie" fill="#8884d8" /> 
+                            <Bar dataKey="Entrée" fill="#82ca9d" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
-            </div>
+            </div> */}
 
             <div>
 
@@ -269,10 +268,11 @@ function VueDEnsemble() {
                         <tr>
                             <th>Client</th>
                             <th>Téléphone</th>
-                            <th >Matériel </th>
-                            <th >Quantité </th>
-                            <th>Montant</th>
-                            <th>Type</th>
+                            <th>Destination</th>
+                            <th >Liste matériel </th>
+                            <th>Total</th>
+                            <th>remise</th>
+                            <th>Total Final</th>
                             <th>Date</th>
                             <th>pdf</th>
                         </tr>
@@ -289,20 +289,24 @@ function VueDEnsemble() {
                             ) :
                                 filteredMateriels.map((data, index) => (
                                     <tr key={index} >
-                                        <th>{data.nomClient}</th>
+                                        <td>{data.nomClient}</td>
                                         <td>{data.phone}</td>
-                                        <td>{data.titre}</td>
-                                        <td>{data.quantite}</td>
+                                        <td>{data.destination}</td>
+                                        <td>
+                                            <ul>
+                                                {JSON.parse(data.materiels).map((el, k) =>
+                                                    <li key={k}>
+                                                        {el.titre} : {el.quantite} * {el.prixUnitaire} F
+                                                    </li>
+                                                )}
+                                            </ul>
+                                        </td>
+                                        <td>{data.total}</td>
+                                        <td>{data.remise}</td>
                                         <td>{data.montant}</td>
-                                        <td>{data.type}</td>
                                         <td>{data.createdAt}</td>
                                         <td>
-                                            <PDFDownloadLink
-                                                document={<Recupdf data={receiptData} />}
-                                                fileName="recu_paiement.pdf"
-                                            >
-                                                {({ loading }) => (loading ? <FaSpinner /> : <FaPrint />)}
-                                            </PDFDownloadLink>
+                                            <Recupdf data={data}/>
                                         </td>
                                     </tr>
                                 ))
