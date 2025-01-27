@@ -1,7 +1,7 @@
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from '@react-pdf/renderer';
 import { FaPrint } from 'react-icons/fa';
-import { Spinner } from 'react-bootstrap';
+// import { Spinner } from 'react-bootstrap';
 import logo from '../../assets/logo.png';
 
 // Composant pour le PDF
@@ -12,8 +12,10 @@ const DevisPDF = ({ data }) => {
         {/* En-tête */}
         <View style={styles.header}>
           <Text style={styles.title}>FACTURE</Text>
+          <View style={{textAlign: 'right'}}>
           <Text>Date: {data?.createdAt}</Text>
-          <Text>Numéro: {`001/04`}</Text>
+          {/* <Text>Numéro: {`001/04`}</Text> */}
+          </View>
         </View>
 
         {/* Informations sur l'entreprise */}
@@ -31,7 +33,7 @@ const DevisPDF = ({ data }) => {
         </View>
 
         {/* Informations sur le client */}
-        <View style={styles.section}>
+        <View style={{marginTop: -50, marginBottom: 10, marginLeft: "60%"}}>
           <Text style={styles.clientTitle}>{data?.nomClient}</Text>
           <Text>{data?.phone}</Text>
           <Text>Destination : {data?.destination}</Text>
@@ -62,9 +64,9 @@ const DevisPDF = ({ data }) => {
 
         {/* Totaux */}
         <View style={styles.totals}>
-          <Text>Total HT : {data?.total}</Text>
-          <Text>Remise : {data?.remise}</Text>
-          <Text style={styles.totalTTC}>TOTAL avec remise : {data?.montant}</Text>
+          <Text>Total HT : {data?.total} F CFA</Text>
+          <Text>Remise : {data?.remise} F CFA</Text>
+          <Text style={styles.totalTTC}>TOTAL avec remise : {data?.montant} F CFA</Text>
         </View>
 
         {/* Signature et image optionnelle */}
@@ -103,7 +105,7 @@ const Recupdf = ({ data }) => {
 const styles = StyleSheet.create({
   page: { padding: 30, fontSize: 12, fontFamily: 'Helvetica' },
   header: { marginBottom: 20 },
-  title: { fontSize: 24, marginBottom: 10, textAlign: 'right', color: '#4a90e2' },
+  title: { fontSize: 24, marginBottom: 10, textAlign: 'right', color: '#4a90e2', fontWeight: 'bold' },
   section: { marginBottom: 10 },
   logo: { width: 100, height: 100, marginBottom: 10 }, // Taille du logo
   companyName: { fontSize: 16, fontWeight: 'bold' },
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
   cell: { flex: 1, borderBottom: '1px solid #ddd', padding: 4 },
   totals: { marginTop: 20 },
   totalTTC: { fontWeight: 'bold', fontSize: 16 },
-  signature: { marginTop: 30, textAlign: 'center' },
+  signature: { position:"absolute", bottom: 140, right: 100 },
   signatureImage: { width: 100, height: 50, marginTop: 10 }, // Taille de l'image de signature
 });
 
