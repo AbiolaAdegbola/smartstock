@@ -6,6 +6,7 @@ import Connexion from './smartStock/Connexion';
 import UpdateMateriel from './smartStock/UpdateMateriel';
 import { Analytics } from "@vercel/analytics/react"
 import 'react-toastify/dist/ReactToastify.css';
+import Inscription from './smartStock/Inscription';
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path='/smartStock' element={<Dashboard />}/>
         <Route path='/update_materiel' element={<UpdateMateriel />}/>
+        <Route path='/ajouter-utilisateur' element={<Inscription/>}/>
         <Route path='/' element={<Connexion/>}/>
       </Routes>
       <Analytics/>

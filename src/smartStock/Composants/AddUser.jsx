@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import db from '../firebase-config'; // Importez vos configurations Firebase
+import db from '../../firebase-config'; // Importez vos configurations Firebase
 import { collection, addDoc } from 'firebase/firestore';
 import { FaSpinner } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
-export default function AddMateriel() {
+export default function AddUser() {
   const { 
     register, 
     handleSubmit, 
@@ -29,7 +29,7 @@ export default function AddMateriel() {
         comment: data.comment || '',
       };
 
-      await addDoc(collection(db, 'materiels'), materielData);
+      await addDoc(collection(db, 'users'), materielData);
 
       // Succès
       toast.success('Matériel ajouté avec succès');

@@ -1,4 +1,4 @@
-import { FaCalculator, FaFile, FaSignOutAlt, FaStackOverflow, } from 'react-icons/fa'
+import { FaCalculator, FaCog, FaFile, FaSignOutAlt, FaStackOverflow, } from 'react-icons/fa'
 import VueDEnsemble from './Composants/VueEnsemble';
 import { useState } from 'react';
 import Materiels from './Composants/Materiels';
@@ -7,10 +7,10 @@ import AddMateriel from './AddMateril';
 import EntrerMateriel from './Composants/EntrerMateriel';
 import SortirMateriel from './Composants/SortirMateriel';
 import logo from '../assets/logo.png'
+import Parametre from './Composants/Parametre';
 
 
 function Dashboard() {
-
 
     const [elementActif, setElementActif] = useState(<VueDEnsemble />);
     const [titreElementActif, setTitreElementActif] = useState("Vue d'ensemble");
@@ -23,11 +23,11 @@ function Dashboard() {
     return (
         <div style={{ position: "relative", backgroundColor: "#F4F5F7" }}>
             {/* barre de menu a gauche */}
-            <div style={{ position: "fixed", height: "100vh", minWidth: "268px", maxWidth: "268px", top: "0px", zIndex: 99, backgroundColor: "white" }}>
+            <div style={{ position: "fixed", height: "100vh", minWidth: "220px", maxWidth: "220px", top: "0px", zIndex: 99, backgroundColor: "white" }}>
 
-                <div style={{ fontSize: "30px", textTransform: "uppercase", fontWeight: "bold", marginTop: "10px", textAlign: "center" }}>
-                    <img src={logo} alt="logo" style={{height:"200px", width:"100%"}} /><br />
-                    Smart Stock
+                <div style={{ fontSize: "30px", textTransform: "uppercase", fontWeight: "bold", marginTop: "30px", textAlign: "center" }}>
+                    <img src={logo} alt="logo" style={{height:"150px", width:"100%"}} /><br />
+                    {/* Smart Stock */}
                 </div>
                 <div style={{ marginTop: "20px" }}>
 
@@ -55,13 +55,13 @@ function Dashboard() {
                     <FaCalculator style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Entrée de materiel</div>
                 </div>
 
-                {/* {
-                    JSON.parse(localStorage.getItem('user'))?.type === 'admin' && <div className={titreElementActif === 'Corbeilles' ? 'actifBarreGauche' : 'barreGauche'} onClick={() => handleChangeContainer("<Corbeilles />", 'Corbeilles')}>
-                        <FaTrash style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Corbeille</div>
+                {
+                    JSON.parse(localStorage.getItem('user'))?.type === 'admin' && <div className={titreElementActif === 'parametre' ? 'actifBarreGauche' : 'barreGauche'} onClick={() => handleChangeContainer(<Parametre />, 'parametre')}>
+                        <FaCog style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }}>Pamarètre</div>
                     </div>
-                } */}
+                }
 
-                <div className='barreGauche' style={{ position: "absolute", bottom: "20px" }}>
+                <div className='barreGauche' style={{ position: "absolute", bottom: "20px", color:"red" }}>
                     <FaSignOutAlt style={{ fontSize: "18px" }} /> <div style={{ marginLeft: "10px" }} onClick={() => {
                         localStorage.removeItem("user")
                         window.location.href = "/"
@@ -71,7 +71,7 @@ function Dashboard() {
 
             </div>
             {/* fin barre de menu a gauche */}
-            <div style={{ marginLeft: "280px", marginRight: "10px", paddingTop: "50px", backgroundColor: "#F4F5F7", height: "100vh" }} >
+            <div style={{ marginLeft: "225px", marginRight: "10px", paddingTop: "50px", backgroundColor: "#F4F5F7", height: "100vh" }} >
                 {elementActif}
             </div>
 

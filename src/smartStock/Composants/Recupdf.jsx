@@ -66,7 +66,7 @@ const DevisPDF = ({ data }) => {
         <View style={styles.totals}>
           <Text>Total HT : {data?.total} F CFA</Text>
           <Text>Remise : {data?.remise} F CFA</Text>
-          <Text style={styles.totalTTC}>TOTAL avec remise : {data?.montant} F CFA</Text>
+          <Text style={styles.totalTTC}>TOTAL HT avec remise : {data?.montant} F CFA</Text>
         </View>
 
         {/* Signature et image optionnelle */}

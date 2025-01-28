@@ -19,8 +19,8 @@
     align-items: center;
     align-content: center;
     padding: 8px;
-    padding-left: 20px;
-    margin-top: 20px;
+    /* padding-left: 20px; */
+    /* margin-top: 20px; */
     cursor: pointer
 }
 
@@ -29,8 +29,8 @@
     align-items: center;
     align-content: center;
     padding: 8px;
-    padding-left: 20px;
-    margin-top: 20px;
+    /* padding-left: 20px; */
+    /* margin-top: 20px; */
     background-color: rgb(218, 165, 32);
     color: white;
     margin-right: 10px;

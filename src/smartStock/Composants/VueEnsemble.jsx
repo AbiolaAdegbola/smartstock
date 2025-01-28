@@ -1,11 +1,11 @@
 import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import ContentLoader from 'react-content-loader';
-import { FaBars, FaCalculator, FaPrint, FaSpinner, FaUser } from 'react-icons/fa'
+import { FaBars, FaCalculator, FaUser } from 'react-icons/fa'
 import db from '../../firebase-config'; // Assurez-vous d'importer correctement votre configuration Firebase
-import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+// import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import Table from 'react-bootstrap/Table';
-import { PDFDownloadLink } from '@react-pdf/renderer';
+// import { PDFDownloadLink } from '@react-pdf/renderer';
 import Recupdf from './Recupdf';
 
 // Fonction pour regrouper et traiter les données
@@ -40,13 +40,11 @@ import Recupdf from './Recupdf';
 const SkeletonLoader = () => (
     <ContentLoader
         width="100%"
-        height={230}
+        height={30}
         backgroundColor="#f3f3f3"
         foregroundColor="#ecebeb"
     >
-        <rect x="0" y="0" rx="8" ry="8" width="100%" height="120" />
-        <rect x="0" y="130" rx="5" ry="5" width="60%" height="20" />
-        <rect x="0" y="160" rx="5" ry="5" width="30%" height="20" />
+        <rect x="0" y="0" rx="8" ry="8" width="100%" height="30" />
     </ContentLoader>
 );
 
@@ -124,7 +122,8 @@ function VueDEnsemble() {
 
     // Filtrer les matériels en fonction du texte de recherche
     const filteredMateriels = materiels.filter(materiel =>
-        materiel?.nomClient?.toLowerCase().includes(searchTerm.toLowerCase())
+        materiel?.nomClient?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        materiel?.destination?.toLowerCase().includes(searchTerm.toLowerCase()) 
     );
 
 
@@ -282,7 +281,7 @@ function VueDEnsemble() {
                         {
                             isLoading ? (
                                 <tr>
-                                    <td colSpan="6">
+                                    <td colSpan="9">
                                         <SkeletonLoader />
                                     </td>
                                 </tr>
