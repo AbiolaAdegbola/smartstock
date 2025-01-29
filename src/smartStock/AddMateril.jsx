@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import db from '../firebase-config'; // Importez vos configurations Firebase
 import { collection, addDoc } from 'firebase/firestore';
 import { FaSpinner } from 'react-icons/fa';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function AddMateriel() {
   const { 
@@ -112,6 +112,9 @@ export default function AddMateriel() {
       <button className="button" disabled={isLoading}>
         {isLoading ? <FaSpinner className="spinner" /> : 'VALIDER'}
       </button>
+
+      <ToastContainer position="top-right" autoClose={3000} />
+
     </form>
   );
 }

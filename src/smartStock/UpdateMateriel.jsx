@@ -4,6 +4,7 @@ import db from '../firebase-config'; // Importez vos configurations Firebase
 import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
 import { FaSpinner } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function AddMateriel() {
     const {
@@ -38,11 +39,11 @@ export default function AddMateriel() {
                 const materielRef = doc(db, 'materiels', state.material.id);
                 await updateDoc(materielRef, materielData);
 
-                alert('Matériel mis à jour avec succès');
+                toast.success('Matériel mis à jour avec succès');
             } else {
                 // Sinon, on l'ajoute comme un nouveau matériel
                 await addDoc(collection(db, 'materiels'), materielData);
-                alert('Matériel ajouté avec succès');
+                toast.success('Matériel ajouté avec succès');
             }
             setIsLoading(false);
             navigate('/smartStock'); // Rediriger vers la page des matériels après l'action
@@ -150,6 +151,9 @@ export default function AddMateriel() {
             <button className="button" disabled={isLoading}>
                 {isLoading ? <FaSpinner className="spinner" /> : 'VALIDER'}
             </button>
+
+      <ToastContainer position="top-right" autoClose={3000} />
+
         </form>
     );
 }
