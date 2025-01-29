@@ -4,6 +4,7 @@ import db from '../../firebase-config'; // Assurez-vous d'importer correctement 
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore'; // Importez les méthodes Firestore
 import { useNavigate } from 'react-router-dom';
 import ContentLoader from 'react-content-loader'; // Assurez-vous d'importer ContentLoader
+import { toast, ToastContainer } from 'react-toastify';
 
 // Squelette de chargement
 const SkeletonLoader = () => (
@@ -62,6 +63,7 @@ function Materiels() {
         
         // Mettre à jour la liste des matériels après la suppression
         setMateriels(materiels.filter(materiel => materiel.id !== id));
+        toast.success("Matériel supprimé avec succès");
       } catch (error) {
         console.error("Erreur lors de la suppression du matériel :", error);
       }
@@ -106,16 +108,7 @@ function Materiels() {
           filteredMateriels.map((materiel) => (
             <div key={materiel.id} className='col-lg-4'>
               <div style={{ width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "30vh", padding: "20px", margin: "10px 0" }}>
-                {/* <img 
-                  src={materiel.imageUrl || ""} 
-                  alt={materiel.titre} 
-                  style={{ 
-                    width: "100%", 
-                    minHeight: "100px", 
-                    maxHeight: "100px", 
-                    objectFit: "cover" 
-                  }} 
-                /> */}
+                
                 <h4>{materiel.titre}</h4>
 
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -153,6 +146,7 @@ function Materiels() {
           ))
         )}
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }

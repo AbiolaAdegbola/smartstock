@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import db from '../firebase-config'; // Assurez-vous que votre configuration Firebase est correcte
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore'; // Importez les méthodes nécessaires de Firestore
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import { Spinner } from 'react-bootstrap';
 
 const Inscription = () => {
@@ -111,6 +111,7 @@ const Inscription = () => {
                     </form>
                 </div>
             </div>
+            <ToastContainer position="top-right" autoClose={3000} />
         </div>
     );
 };

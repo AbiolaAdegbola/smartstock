@@ -4,6 +4,7 @@ import db from '../../firebase-config';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import ContentLoader from 'react-content-loader';
+import { toast, ToastContainer } from 'react-toastify';
 
 const SkeletonLoader = () => (
   <ContentLoader width="100%" height={100} backgroundColor="#f3f3f3" foregroundColor="#ecebeb">
@@ -44,6 +45,7 @@ function ListeUsers() {
       try {
         await deleteDoc(doc(db, 'users', id));
         setUtilisateurs(utilisateurs.filter(user => user.id !== id));
+        toast.success("Utilisateur supprimé avec succès");
       } catch (error) {
         console.error("Erreur lors de la suppression de l'utilisateur :", error);
       }
@@ -88,6 +90,9 @@ function ListeUsers() {
           })
         )}
       </div>
+
+      <ToastContainer position="top-right" autoClose={3000} />
+      
     </div>
   );
 }
