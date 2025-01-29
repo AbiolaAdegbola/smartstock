@@ -8,34 +8,6 @@ import Table from 'react-bootstrap/Table';
 // import { PDFDownloadLink } from '@react-pdf/renderer';
 import Recupdf from './Recupdf';
 
-// Fonction pour regrouper et traiter les données
-// function processData(historiques) {
-//     const monthlyData = {};
-
-//     historiques.forEach((item) => {
-
-//         const [day, month, year] = item.createdAt.split("/").map(Number); // Sépare les parties de la date
-//         const date = new Date(year, month - 1, day); // Convertit la chaîne en date
-//         const monthName = date.toLocaleString("fr-FR", { month: "long" }); // Extrait le nom du mois
-//         const type = item.type;
-//         // console.log(date)
-//         const quantite = parseInt(item.quantite, 10); // Convertit la quantité en nombre
-
-//         if (!monthlyData[monthName]) {
-//             monthlyData[monthName] = { name: monthName, Entrée: 0, Sortie: 0 };
-//         }
-
-//         if (type === "Entrée") {
-//             monthlyData[monthName].Entrée += quantite;
-//         } else if (type === "Sortie") {
-//             monthlyData[monthName].Sortie += quantite;
-//         }
-//     });
-
-//     // Convertit l'objet en tableau trié par mois
-//     return Object.values(monthlyData);
-// }
-
 // Squelette de chargement
 const SkeletonLoader = () => (
     <ContentLoader
@@ -53,9 +25,9 @@ function VueDEnsemble() {
     const [materiels, setMateriels] = useState([])
     const [isLoading, setIsLoading] = useState(true); // État pour le chargement des données
     const [searchTerm, setSearchTerm] = useState(""); // État pour la recherche
-    // const [data, setData] = useState([]); // État pour stocker les données traitées
     const [total, setTotal] = useState(0); // État pour stocker le total des matériels
     const [sortieTotal, setSortieTotal] = useState(0)
+    const [facturesInfo, setFacturesInfo] = useState(false)
 
     // Utilisez useEffect pour récupérer les matériels à chaque fois que le composant se monte
     useEffect(() => {
@@ -76,6 +48,12 @@ function VueDEnsemble() {
 
         fetchMateriels(); // Appel de la fonction pour récupérer les matériels
 
+        
+        if (localStorage.getItem('facture')) {
+            //informations utilisateur pour faire la facture
+            setFacturesInfo(JSON.parse(localStorage.getItem('facture')))
+        }
+
     }, []); // Le tableau vide signifie que l'effet s'exécutera une seule fois au montage du composant
 
     useEffect(() => {
@@ -90,20 +68,7 @@ function VueDEnsemble() {
         return () => unsubscribe();
     }, []);
 
-    // useEffect(() => {
-
-    //     const historiquesCollection = collection(db, "historiques");
-
-    //     // Écoute les changements en temps réel
-    //     const unsubscribe = onSnapshot(historiquesCollection, (snapshot) => {
-    //         const historiques = snapshot.docs.map((doc) => doc.data());
-    //         const processedData = processData(historiques);
-    //         setData(processedData);
-    //     });
-
-    //     return () => unsubscribe();
-    // }, []);
-
+   
     useEffect(() => {
         const historiqueCollection = collection(db, "historiques");
 
@@ -125,40 +90,6 @@ function VueDEnsemble() {
         materiel?.nomClient?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         materiel?.destination?.toLowerCase().includes(searchTerm.toLowerCase()) 
     );
-
-
-    // const receiptData = {
-    //     receiptNumber: "001",
-    //     date: "21/01/2025",
-    //     clientName: "Jean Dupont",
-    //     clientContact: "0707070707",
-    //     rentals: [
-    //         {
-    //             material: "Chaise",
-    //             unitPrice: 500,
-    //             quantity: 10,
-    //             dailyPrice: 5000,
-    //             startDate: "20/01/2025",
-    //             endDate: "21/01/2025",
-    //             days: 1,
-    //             totalPrice: 5000,
-    //         },
-    //         {
-    //             material: "Bâche",
-    //             unitPrice: 10000,
-    //             quantity: 2,
-    //             dailyPrice: 20000,
-    //             startDate: "20/01/2025",
-    //             endDate: "21/01/2025",
-    //             days: 1,
-    //             totalPrice: 20000,
-    //         },
-    //     ],
-    //     discount: 10,
-    //     total: 22500,
-    //     paymentMethod: "Espèces",
-    // };
-
 
     return (
         <div>
@@ -213,34 +144,6 @@ function VueDEnsemble() {
                     </div>
                 </div>
             </div>
-
-            {/* <div>
-                <div style={{ marginTop: "20px", width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "52vh", padding: "20px" }}>
-                    <h6>Statistique de location de matériel mensuel</h6>
-
-                    <ResponsiveContainer width="100%" height="95%">
-                        <BarChart
-                            width={500}
-                            height={300}
-                            data={data}
-                            margin={{
-                                top: 5,
-                                right: 5,
-                                left: 0,
-                                bottom: 5,
-                            }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="Sortie" fill="#8884d8" /> 
-                            <Bar dataKey="Entrée" fill="#82ca9d" />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-            </div> */}
 
             <div>
 
@@ -305,7 +208,7 @@ function VueDEnsemble() {
                                         <td>{data.montant}</td>
                                         <td>{data.createdAt}</td>
                                         <td>
-                                            <Recupdf data={data}/>
+                                            <Recupdf data={data} facturesInfo={facturesInfo}/>
                                         </td>
                                     </tr>
                                 ))

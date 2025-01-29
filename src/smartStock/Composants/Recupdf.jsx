@@ -4,7 +4,7 @@ import { FaPrint } from 'react-icons/fa';
 import logo from '../../assets/logo.png';
 import signature from '../../assets/signature.png';
 
-const DevisPDF = ({ data }) => {
+const DevisPDF = ({ data, facturesInfo }) => {
   return (
     <Document>
       <Page style={styles.page}>
@@ -22,11 +22,11 @@ const DevisPDF = ({ data }) => {
         {/* Infos Entreprise */}
         <View style={{marginLeft:30}}>
         <Image src={logo} style={styles.logo} />
-          <Text style={styles.bold}>{data?.nomEntreprise || "Votre entreprise"}</Text>
-          <Text>{data?.statutJuridique || "Statut juridique"}</Text>
-          <Text>{data?.adresse || "Adresse"}</Text>
-          <Text>{data?.phone || "N° de téléphone"}</Text>
-          <Text>{data?.email || "Adresse e-mail"}</Text>
+          <Text style={styles.bold}>{facturesInfo?.nomEntreprise || "Votre entreprise"}</Text>
+          <Text>{facturesInfo?.statutJuridique || "Statut juridique"}</Text>
+          <Text>{facturesInfo?.adresse || "Adresse"}</Text>
+          <Text>{facturesInfo?.phone || "N° de téléphone"}</Text>
+          <Text>{facturesInfo?.email || "Adresse e-mail"}</Text>
         </View>
 
         {/* Infos Client */}
@@ -67,7 +67,7 @@ const DevisPDF = ({ data }) => {
         {/* Conditions de paiement */}
         <View style={styles.paymentTerms}>
           <Text>
-            {data?.description ||
+            {facturesInfo?.description ||
               "Durée estimée des travaux : 4 jours ouvrables à compter de la date de signature du devis. Paiement en trois tranches : 20% à la commande, 30% au début des travaux, et 50% à la livraison."}
           </Text>
         </View>
@@ -81,10 +81,10 @@ const DevisPDF = ({ data }) => {
         {/* Pied de page */}
         <View style={{position: 'absolute', bottom: 30, left: 0, right: 0, textAlign: 'center', color: '#666'}}>
           <Text>
-            Mode de paiement : {data?.bank} | Chèque à l'ordre de {data?.nomEntreprise} | Virement (RIB) : {data?.iban} | Espèce.
+            Mode de paiement : {facturesInfo?.bank} | Chèque à l'ordre de {facturesInfo?.nomEntreprise} | Virement (RIB) : {facturesInfo?.iban} | Espèce.
           </Text>
           <Text>
-            Capital social : {data?.capital} | N°RCCM : {data?.rccm} | N°CC : {data?.n_cc} | Site web : {data?.siteWeb} | E-mail : {data?.email}
+            Capital social : {facturesInfo?.capital} | N°RCCM : {facturesInfo?.rccm} | N°CC : {facturesInfo?.n_cc} | Site web : {facturesInfo?.siteWeb} | E-mail : {facturesInfo?.email}
           </Text>
         </View>
       </Page>
@@ -94,10 +94,10 @@ const DevisPDF = ({ data }) => {
 
 
 // Composant principal
-const Recupdf = ({ data }) => {
+const Recupdf = ({ data, facturesInfo }) => {
   return (
     <PDFDownloadLink
-      document={<DevisPDF data={data} />}
+      document={<DevisPDF data={data} facturesInfo={facturesInfo} />}
       fileName={`devis-${data?.createdAt || "2025010001"}.pdf`}
       style={{
         textDecoration: 'none',
