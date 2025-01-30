@@ -158,16 +158,13 @@ export default function EntrerMateriel() {
         className={errors.quantite ? 'inputError' : 'input'}
         placeholder="Quantité à entrer"
         {...register("quantite", {
-          required: "La quantité est obligatoire",
           min: { value: 1, message: "La quantité doit être au moins 1" },
         })}
       />
 
       <select
         className={errors.etatMateriel ? 'inputError' : 'input'}
-        {...register("etatMateriel", {
-          required: "Le etat du matériel est obligatoire",
-        })}
+        {...register("etatMateriel")}
         style={{height: "60px"}}
       >
         <option value="">-- Sélectionnez un etat de matériel --</option>
