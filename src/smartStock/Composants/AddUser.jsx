@@ -78,7 +78,7 @@ export default function AddUser() {
       />
 
       {/* Champ Type d'accès */}
-      <select className="input" style={{height:"40px"}} {...register("type", { required: "Le type d'accès est obligatoire" })}>
+      <select className="input" style={{height:"57px"}} {...register("type", { required: "Le type d'accès est obligatoire" })}>
         <option value="">Sélectionner le type d'accès</option>
         <option value="admin">Administrateur</option>
         <option value="gestion">Utilisateur</option>

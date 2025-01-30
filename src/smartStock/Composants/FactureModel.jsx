@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Spinner } from "react-bootstrap";
 import logo from '../../assets/logo.png'
@@ -36,7 +36,7 @@ const FactureModel = () => {
 
 
   // Utilisation de react-hook-form
-  const { control, handleSubmit, watch } = useForm({
+  const { control, handleSubmit, setValue, watch } = useForm({
     defaultValues: {
       logo: "",
       nomEntreprise: "",
@@ -45,6 +45,27 @@ const FactureModel = () => {
       adresse: "",
     },
   });
+
+  useEffect(() => {
+    if (localStorage.getItem("facture")) {
+      const facture = JSON.parse(localStorage.getItem("facture"))
+      setValue("nomEntreprise", facture.nomEntreprise)
+      setValue("phone", facture.phone)
+      setValue("email", facture.email)
+      setValue("adresse", facture.adresse)
+      setValue("valDate", facture.valDate)
+      setValue("statutJuridique", facture.statutJuridique)
+      setValue("capital", facture.capital)
+      setValue("siteWeb", facture.siteWeb)
+      setValue("rccm", facture.rccm)
+      setValue("n_cc", facture.n_cc)
+      setValue("iban", facture.iban)
+      setValue("bank", facture.bank)
+      setValue("description", facture.description)
+      // setValue("n_cc", facture.n_cc)
+    }
+  }, [setValue])
+  
 
   const formData = watch();
 
