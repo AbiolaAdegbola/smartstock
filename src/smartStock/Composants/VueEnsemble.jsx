@@ -28,6 +28,7 @@ function VueDEnsemble() {
     const [total, setTotal] = useState(0); // État pour stocker le total des matériels
     const [sortieTotal, setSortieTotal] = useState(0)
     const [facturesInfo, setFacturesInfo] = useState(false)
+    const [typeActivite, setTypeActivite] = useState(1)
 
     // Utilisez useEffect pour récupérer les matériels à chaque fois que le composant se monte
     useEffect(() => {
@@ -48,11 +49,22 @@ function VueDEnsemble() {
 
         fetchMateriels(); // Appel de la fonction pour récupérer les matériels
 
-        
-        if (localStorage.getItem('facture')) {
-            //informations utilisateur pour faire la facture
-            setFacturesInfo(JSON.parse(localStorage.getItem('facture')))
-        }
+
+        // recuperation des informations pour la facture
+        const fetchFacture = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'factures')); // Récupère tous les matériels de la collection "materiels"
+                const materielsData = querySnapshot.docs.map(doc => ({
+                    id: doc.id, // Ajoutez l'ID du document pour des opérations futures (supprimer, modifier, etc.)
+                    ...doc.data(), // Récupère les données du document
+                }));
+                setFacturesInfo(materielsData); // Mettez à jour l'état avec les données récupérées
+            } catch (error) {
+                console.error("Erreur lors de la récupération des information sur la facture :", error);
+            }
+        };
+
+        fetchFacture()
 
     }, []); // Le tableau vide signifie que l'effet s'exécutera une seule fois au montage du composant
 
@@ -68,7 +80,7 @@ function VueDEnsemble() {
         return () => unsubscribe();
     }, []);
 
-   
+
     useEffect(() => {
         const historiqueCollection = collection(db, "historiques");
 
@@ -86,9 +98,11 @@ function VueDEnsemble() {
 
 
     // Filtrer les matériels en fonction du texte de recherche
-    const filteredMateriels = materiels.filter(materiel =>
+    let filteredMateriels = materiels.filter(materiel =>
         materiel?.nomClient?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        materiel?.destination?.toLowerCase().includes(searchTerm.toLowerCase()) 
+        materiel?.destination?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        materiel?.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        materiel?.type?.toLowerCase().includes(searchTerm.toLowerCase()) // Ajoutez d'autres champs si nécessaire
     );
 
     return (
@@ -165,9 +179,25 @@ function VueDEnsemble() {
                         }}
                     />
                 </div>
-                <Table bordered hover responsive> {/* Tableau pour afficher les matériels */}
+                <div style={{ display: "flex", marginTop: "20px" }}>
+                    <h5 style={{ fontSize: "15px", backgroundColor: typeActivite === 1 ? "goldenrod" : "transparent", color: typeActivite === 1 ? "white" : "black", padding: "10px", borderRadius: "10px", cursor: "pointer" }} onClick={() => {
+                        setTypeActivite(1)
+                        setSearchTerm("")
+                    }}>Tous</h5>
+                    <h5 style={{ fontSize: "15px", backgroundColor: typeActivite === 2 ? "goldenrod" : "transparent", color: typeActivite === 2 ? "white" : "black", padding: "10px", borderRadius: "10px", cursor: "pointer" }} onClick={() => {
+                        setTypeActivite(2)
+                        setSearchTerm("Entrée")
+                    }}>Entrées</h5>
+                    <h5 style={{ fontSize: "15px", backgroundColor: typeActivite === 3 ? "goldenrod" : "transparent", color: typeActivite === 3 ? "white" : "black", padding: "10px", borderRadius: "10px", cursor: "pointer" }} onClick={() => {
+                        setTypeActivite(3)
+                        setSearchTerm("Sortie")
+                    }}>Sorties</h5>
+                </div>
+                <Table bordered hover responsive style={{fontSize:"12px", minWidth:"1200px"}}> {/* Tableau pour afficher les matériels */}
                     <thead>
                         <tr>
+                            <th>Type</th>
+                            <th>Fait par</th>
                             <th>Client</th>
                             <th>Téléphone</th>
                             <th>Destination</th>
@@ -180,7 +210,6 @@ function VueDEnsemble() {
                         </tr>
                     </thead>
                     <tbody>
-
                         {
                             isLoading ? (
                                 <tr>
@@ -191,6 +220,8 @@ function VueDEnsemble() {
                             ) :
                                 filteredMateriels.map((data, index) => (
                                     <tr key={index} >
+                                        <td style={{backgroundColor:data.type==="Entrée" ? "orange" : "green", color: "white" }}>{data.type}</td>
+                                        <td>{data.faitPar}</td>
                                         <td>{data.nomClient}</td>
                                         <td>{data.phone}</td>
                                         <td>{data.destination}</td>
@@ -203,12 +234,13 @@ function VueDEnsemble() {
                                                 )}
                                             </ul>
                                         </td>
-                                        <td>{data.total}</td>
-                                        <td>{data.remise}</td>
-                                        <td>{data.montant}</td>
+                                        <td>{data.type === "Sortie" ? data.total : "-"}</td>
+                                        <td>{data.type === "Sortie" ? data.remise : "-"}</td>
+                                        <td>{data.type === "Sortie" ? data.montant : "-"}</td>
                                         <td>{data.createdAt}</td>
                                         <td>
-                                            <Recupdf data={data} facturesInfo={facturesInfo}/>
+                                        {data.type === "Sortie" ? <Recupdf data={data} facturesInfo={facturesInfo} /> : "-"}
+                                            
                                         </td>
                                     </tr>
                                 ))

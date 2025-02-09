@@ -23,13 +23,13 @@ function Dashboard() {
     return (
         <div style={{ position: "relative", backgroundColor: "#F4F5F7" }}>
             {/* barre de menu a gauche */}
-            <div style={{ position: "fixed", height: "100vh", minWidth: "220px", maxWidth: "220px", top: "0px", zIndex: 99, backgroundColor: "white" }}>
+            <div style={{ position: "fixed", height: "100vh", minWidth: "190px", maxWidth: "190px", top: "0px", zIndex: 99, backgroundColor: "white", fontSize:"13px" }}>
 
                 <div style={{ fontSize: "30px", textTransform: "uppercase", fontWeight: "bold", marginTop: "30px", textAlign: "center" }}>
                     <img src={logo} alt="logo" style={{height:"150px", width:"100%"}} /><br />
                     {/* Smart Stock */}
                 </div>
-                <div style={{ marginTop: "20px" }}>
+                <div style={{ marginTop: "10px" }}>
 
                 </div>
                 <div onClick={() => handleChangeContainer(<VueDEnsemble />, "Vue d'ensemble")} className={titreElementActif === "Vue d'ensemble" ? 'actifBarreGauche' : 'barreGauche'}>
@@ -71,7 +71,7 @@ function Dashboard() {
 
             </div>
             {/* fin barre de menu a gauche */}
-            <div style={{ marginLeft: "225px", marginRight: "10px", paddingTop: "50px", backgroundColor: "#F4F5F7", height: "100vh" }} >
+            <div style={{ marginLeft: "200px", marginRight: "10px", paddingTop: "50px", backgroundColor: "#F4F5F7", height: "100vh" }} >
                 {elementActif}
             </div>
 

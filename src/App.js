@@ -15,7 +15,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path='/smartStock' element={<Dashboard />}/>
-        <Route path='/update_materiel' element={<UpdateMateriel />}/>
+        <Route path='/update_materiel/' element={<UpdateMateriel />}/>
         <Route path='/ajouter-utilisateur' element={<Inscription/>}/>
         <Route path='/' element={<Connexion/>}/>
       </Routes>

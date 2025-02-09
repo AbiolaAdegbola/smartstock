@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import db from '../firebase-config'; // Importez vos configurations Firebase
-import { collection, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { FaSpinner } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
@@ -18,7 +18,6 @@ export default function AddMateriel() {
     const [isLoading, setIsLoading] = useState(false);
     const { state } = useLocation(); // Récupère l'état passé via la navigation
     const navigate = useNavigate(); // Permet de rediriger après l'ajout ou la mise à jour
-
     const connexion = async (data) => {
         setIsLoading(true);
         setErrorsMesg(""); // Réinitialise les messages d'erreur
@@ -34,17 +33,12 @@ export default function AddMateriel() {
                 comment: data.comment || '',
             };
 
-            if (state?.material) {
                 // Si un matériel est passé via state, on le met à jour
-                const materielRef = doc(db, 'materiels', state.material.id);
+                const materielRef = doc(db, 'materiels', state.materiel.id);
                 await updateDoc(materielRef, materielData);
 
                 toast.success('Matériel mis à jour avec succès');
-            } else {
-                // Sinon, on l'ajoute comme un nouveau matériel
-                await addDoc(collection(db, 'materiels'), materielData);
-                toast.success('Matériel ajouté avec succès');
-            }
+        
             setIsLoading(false);
             navigate('/smartStock'); // Rediriger vers la page des matériels après l'action
         } catch (error) {

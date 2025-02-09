@@ -9,6 +9,7 @@ export default function AddMateriel() {
   const { 
     register, 
     handleSubmit, 
+    reset,
     formState: { errors } 
   } = useForm();
   
@@ -20,19 +21,20 @@ export default function AddMateriel() {
     setErrorsMesg(""); // Réinitialise les messages d'erreur
     try {
       const materielData = {
-        file: "lien du fichier", // Remplacez par l'URL du fichier si nécessaire
         titre: data.titre,
         stock: data.stock || '',
         codeMateriel: data.codeMateriel || '',
         prixAchat: data.prixAchat || '',
         fournisseur: data.fournisseur || '',
         comment: data.comment || '',
+        faitPar: JSON.parse(localStorage.getItem('user')).nom,
       };
 
       await addDoc(collection(db, 'materiels'), materielData);
 
       // Succès
       toast.success('Matériel ajouté avec succès');
+      reset()
       setIsLoading(false);
     } catch (error) {
       console.error('Erreur lors de l’ajout du matériel :', error);

@@ -118,6 +118,7 @@ export default function SortirMateriel() {
         type: "Sortie",
         destination: data.destination,
         createdAt: new Date().toLocaleDateString(),
+        faitPar: JSON.parse(localStorage.getItem('user')).nom,
       };
 
       await addDoc(collection(db, 'historiques'), field);

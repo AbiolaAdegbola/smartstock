@@ -5,6 +5,7 @@ import logo from '../../assets/logo.png';
 import signature from '../../assets/signature.png';
 
 const DevisPDF = ({ data, facturesInfo }) => {
+  console.log(data, facturesInfo);
   return (
     <Document>
       <Page style={styles.page}>
@@ -13,28 +14,29 @@ const DevisPDF = ({ data, facturesInfo }) => {
           
           <View style={styles.headerText}>
             <Text style={styles.title}>FACTURE</Text>
-            <Text>Date: {data?.createdAt || "01/01/2025"}</Text>
-            <Text>Numéro: 001/04</Text>
-            <Text>Valable: {data?.valDate || "2 mois"}</Text>
+            <Text>Date: {data?.createdAt || ""}</Text>
+            {/* <Text>Numéro: 001/04</Text> */}
+            {/* <Text>Valable: {data?.valDate || ""}</Text> */}
           </View>
         </View>
 
         {/* Infos Entreprise */}
         <View style={{marginLeft:30}}>
         <Image src={logo} style={styles.logo} />
-          <Text style={styles.bold}>{facturesInfo?.nomEntreprise || "Votre entreprise"}</Text>
-          <Text>{facturesInfo?.statutJuridique || "Statut juridique"}</Text>
-          <Text>{facturesInfo?.adresse || "Adresse"}</Text>
-          <Text>{facturesInfo?.phone || "N° de téléphone"}</Text>
-          <Text>{facturesInfo?.email || "Adresse e-mail"}</Text>
+          <Text style={styles.bold}>{facturesInfo?.nomEntreprise || ""}</Text>
+          <Text>{facturesInfo?.statutJuridique || ""}</Text>
+          <Text>{facturesInfo?.adresse || ""}</Text>
+          <Text>{facturesInfo?.phone || ""}</Text>
+          <Text>{facturesInfo?.email || ""}</Text>
         </View>
 
         {/* Infos Client */}
         <View style={[{marginTop:-30, marginRight:80}, styles.clientInfo]}>
-          <Text style={styles.bold}>Le client</Text>
-          <Text>{data?.nomClient || "Nom client"}</Text>
-          <Text>{data?.adresseClient || "Son adresse"}</Text>
-          <Text>{data?.contactClient || "Ses coordonnées"}</Text>
+          {/* <Text style={styles.bold}>Le client</Text> */}
+          <Text>{data?.nomClient || ""}</Text>
+          <Text>{data?.adresseClient || ""}</Text>
+          <Text>{data?.phone || ""}</Text>
+          <Text>{data?.destination || ""}</Text>
         </View>
 
         {/* Tableau des articles */}
@@ -59,8 +61,8 @@ const DevisPDF = ({ data, facturesInfo }) => {
 
         {/* Totaux */}
         <View style={styles.totals}>
-          <Text>Total HT : {data?.total} F CFA</Text>
-          <Text>Remise : {data?.remise} F CFA</Text>
+          <Text>Total HT : {data?.total} F</Text>
+          <Text>Remise : {data?.remise} F</Text>
           <Text style={styles.bold}>TOTAL HT avec remise : {data?.montant} F CFA</Text>
         </View>
 
@@ -68,18 +70,20 @@ const DevisPDF = ({ data, facturesInfo }) => {
         <View style={styles.paymentTerms}>
           <Text>
             {facturesInfo?.description ||
-              "Durée estimée des travaux : 4 jours ouvrables à compter de la date de signature du devis. Paiement en trois tranches : 20% à la commande, 30% au début des travaux, et 50% à la livraison."}
+              ""}
           </Text>
         </View>
 
         {/* Signature */}
-        <View style={{marginTop: 30, marginRight: 50, flexDirection: 'row', justifyContent: 'flex-end'}}>
+        <View style={{marginTop: 30, flexDirection: 'row', justifyContent: 'flex-end'}}>
+          <View>
           <Text style={{marginLeft:30}}>Signature du Gérant</Text>
           <Image src={signature} style={styles.signatureImage} />
+          </View>
         </View>
 
         {/* Pied de page */}
-        <View style={{position: 'absolute', bottom: 30, left: 0, right: 0, textAlign: 'center', color: '#666'}}>
+        <View style={{position: 'absolute', bottom: 30, left: 10, right: 10, textAlign: 'center', color: '#666', fontSize:10}}>
           <Text>
             Mode de paiement : {facturesInfo?.bank} | Chèque à l'ordre de {facturesInfo?.nomEntreprise} | Virement (RIB) : {facturesInfo?.iban} | Espèce.
           </Text>
@@ -97,8 +101,8 @@ const DevisPDF = ({ data, facturesInfo }) => {
 const Recupdf = ({ data, facturesInfo }) => {
   return (
     <PDFDownloadLink
-      document={<DevisPDF data={data} facturesInfo={facturesInfo} />}
-      fileName={`devis-${data?.createdAt || "2025010001"}.pdf`}
+      document={<DevisPDF data={data} facturesInfo={facturesInfo[0]} />}
+      fileName={`devis-${data?.createdAt || ""}.pdf`}
       style={{
         textDecoration: 'none',
         color: '#fff',
@@ -107,7 +111,7 @@ const Recupdf = ({ data, facturesInfo }) => {
         border: 'none'
       }}
     >
-      <FaPrint style={{ color: "orange" }} />
+      <FaPrint style={{ color: "green", fontSize:"22px" }} />
     </PDFDownloadLink>
   );
 };
@@ -153,7 +157,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   table: {
-    marginTop: 10,
+    marginTop: 30,
     borderWidth: 1,
     borderColor: '#ddd',
   },
@@ -195,7 +199,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 50,
     marginTop: 5,
-    marginRight: 50,
+    // marginRight: 50,
   },
   footer: {
     marginTop: 20,

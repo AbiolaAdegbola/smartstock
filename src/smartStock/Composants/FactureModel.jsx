@@ -4,7 +4,7 @@ import { Spinner } from "react-bootstrap";
 import logo from '../../assets/logo.png'
 import signature from '../../assets/signature.png'
 import { toast, ToastContainer } from "react-toastify";
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import db from '../../firebase-config'; // Importez vos configurations Firebase
 
 
@@ -32,40 +32,40 @@ const FormField = ({ name, placeholder, control, rules }) => (
 
 const FactureModel = () => {
   const [loading, setLoading] = useState(false);
+  const [facturesInfo, setFacturesInfo] = useState(false)
   const [actifContainer, setActifContainer] = useState(1);
 
 
-  // Utilisation de react-hook-form
-  const { control, handleSubmit, setValue, watch } = useForm({
-    defaultValues: {
-      logo: "",
-      nomEntreprise: "",
-      phone: "",
-      email: "",
-      adresse: "",
-    },
-  });
-
   useEffect(() => {
-    if (localStorage.getItem("facture")) {
-      const facture = JSON.parse(localStorage.getItem("facture"))
-      setValue("nomEntreprise", facture.nomEntreprise)
-      setValue("phone", facture.phone)
-      setValue("email", facture.email)
-      setValue("adresse", facture.adresse)
-      setValue("valDate", facture.valDate)
-      setValue("statutJuridique", facture.statutJuridique)
-      setValue("capital", facture.capital)
-      setValue("siteWeb", facture.siteWeb)
-      setValue("rccm", facture.rccm)
-      setValue("n_cc", facture.n_cc)
-      setValue("iban", facture.iban)
-      setValue("bank", facture.bank)
-      setValue("description", facture.description)
-      // setValue("n_cc", facture.n_cc)
-    }
-  }, [setValue])
+
+    // recuperation des informations pour la facture
+    const fetchFacture = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'factures')); // Récupère tous les matériels de la collection "materiels"
+        const materielsData = querySnapshot.docs.map(doc => ({
+          id: doc.id, // Ajoutez l'ID du document pour des opérations futures (supprimer, modifier, etc.)
+          ...doc.data(), // Récupère les données du document
+        }));
+        setFacturesInfo(materielsData[0]); // Mettez à jour l'état avec les données récupérées
+      } catch (error) {
+        console.error("Erreur lors de la récupération des information sur la facture :", error);
+      }
+    };
+
+    fetchFacture()
+    // setValue("n_cc", facture.n_cc)
+  }, [])
+
+    // Utilisation de react-hook-form
+    const { control, handleSubmit, watch, reset } = useForm({
+      defaultValues: facturesInfo,
+    });
+
+    console.log(facturesInfo)
   
+    useEffect(() => {
+      reset(facturesInfo);
+    }, [facturesInfo, reset]);
 
   const formData = watch();
 
@@ -82,7 +82,6 @@ const FactureModel = () => {
         phone: data.phone,
         email: data.email,
         adresse: data.adresse,
-        valDate: data.valDate,
         statutJuridique: data.statutJuridique,
         capital: data.capital,
         siteWeb: data.siteWeb,
@@ -96,12 +95,9 @@ const FactureModel = () => {
       //enregistrement des données dans la base de données firebase
       // await addDoc(collection(db, 'factures'), field);
       const materielRef = doc(db, 'factures', "WclDxBH49w20W3aHTJeZ");
-                await updateDoc(materielRef, field);
+      await updateDoc(materielRef, field);
       // Succès
       toast.success('Matériel ajouté avec succès');
-
-      //sauvegarder les données dans le local storage
-      localStorage.setItem("facture", JSON.stringify(field));
 
     } catch (error) {
       console.error('Erreur lors de l’ajout du matériel :', error);
@@ -140,7 +136,6 @@ const FactureModel = () => {
                 { name: "phone", label: "Numéro de téléphone", placeholder: "Numéro de téléphone", rules: { required: "Ce champ est requis" } },
                 { name: "email", label: "E-mail de contact", placeholder: "E-mail de contact", rules: { required: "Ce champ est requis", pattern: { value: /^[^@]+@[^@]+\.[^@]+$/, message: "Format email invalide" } } },
                 { name: "adresse", label: "Adresse", placeholder: "Adresse", rules: { required: "Ce champ est requis" } },
-                { name: "valDate", label: "Valable pendant", placeholder: "Valable 2 mois" },
                 { name: "statutJuridique", label: "Statut juridique", placeholder: "Statut juridique" },
               ].map((field) => (
                 <FormField key={field.name} {...field} control={control} />
@@ -318,7 +313,7 @@ const Devis1 = ({ data }) => {
 
       <div style={styles.signature}>
         <p>Signature du Gérant</p>
-        <img src={signature} alt="signature" style={{width:"150px", height:"150px"}}/>
+        <img src={signature} alt="signature" style={{ width: "150px", height: "150px" }} />
       </div>
 
       <div style={styles.footer}>

@@ -106,6 +106,7 @@ export default function EntrerMateriel() {
         type: "Entrée",
         destination: "",
         createdAt: new Date().toLocaleDateString(),
+        faitPar: JSON.parse(localStorage.getItem('user')).nom,
       };
 
       await addDoc(collection(db, 'historiques'), field);

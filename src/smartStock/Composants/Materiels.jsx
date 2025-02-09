@@ -106,8 +106,8 @@ function Materiels() {
         ) : (
           // Parcourez les matériels filtrés et affichez chaque matériel dans une colonne
           filteredMateriels.map((materiel) => (
-            <div key={materiel.id} className='col-lg-4'>
-              <div style={{ width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "30vh", padding: "20px", margin: "10px 0" }}>
+            <div key={materiel.id} className='col-lg-4' >
+              <div style={{ width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192, 192,0.3)", height: "30vh", padding: "20px", margin: "10px 0", position:"relative" }}>
                 
                 <h4>{materiel.titre}</h4>
 
@@ -118,7 +118,7 @@ function Materiels() {
                       <div style={{ display: "flex" }}>
                         <FaPencilAlt 
                           style={{ color: "blue", cursor: "pointer" }} 
-                          onClick={() => navigate(`/update_materiel/${materiel.id}`)} 
+                          onClick={() => navigate(`/update_materiel/`, {state: {materiel: materiel}})} 
                         />
                         <FaTrashAlt 
                           style={{ color: "red", cursor: "pointer", marginLeft: "10px" }} 
@@ -140,6 +140,10 @@ function Materiels() {
                 <div style={{ marginTop: "15px" }}>
                   <span>Commentaire</span>
                   <div style={{ fontSize: "14px", color: "#666" }}>{materiel.comment || 'Aucun commentaire'}</div>
+                </div>
+
+                <div style={{fontSize:"12px", fontStyle:"italic", textDecoration:"underline", position:"absolute", right:"10px", bottom:"10px"}}>
+                  {materiel?.faitPar}
                 </div>
               </div>
             </div>

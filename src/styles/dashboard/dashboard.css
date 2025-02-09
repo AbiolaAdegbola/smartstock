@@ -18,9 +18,9 @@
     display: flex;
     align-items: center;
     align-content: center;
-    padding: 8px;
+    padding: 2px 8px;
     /* padding-left: 20px; */
-    /* margin-top: 20px; */
+    margin-top: 8px;
     cursor: pointer
 }
 
@@ -28,9 +28,9 @@
     display: flex;
     align-items: center;
     align-content: center;
-    padding: 8px;
+    padding: 2px 8px;
     /* padding-left: 20px; */
-    /* margin-top: 20px; */
+    margin-top: 8px;
     background-color: rgb(218, 165, 32);
     color: white;
     margin-right: 10px;
