@@ -1,12 +1,13 @@
-import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import ContentLoader from 'react-content-loader';
-import { FaBars, FaCalculator, FaUser } from 'react-icons/fa'
+import { FaBars, FaCalculator, FaTrashAlt, FaUser } from 'react-icons/fa'
 import db from '../../firebase-config'; // Assurez-vous d'importer correctement votre configuration Firebase
 // import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import Table from 'react-bootstrap/Table';
 // import { PDFDownloadLink } from '@react-pdf/renderer';
 import Recupdf from './Recupdf';
+import { toast, ToastContainer } from 'react-toastify';
 
 // Squelette de chargement
 const SkeletonLoader = () => (
@@ -32,23 +33,46 @@ function VueDEnsemble() {
 
     // Utilisez useEffect pour récupérer les matériels à chaque fois que le composant se monte
     useEffect(() => {
+        // const fetchMateriels = async () => {
+        //     try {
+        //         const querySnapshot = await getDocs(collection(db, 'historiques')); // Récupère tous les matériels de la collection "materiels"
+        //         const materielsData = querySnapshot.docs.map(doc => ({
+        //             id: doc.id, // Ajoutez l'ID du document pour des opérations futures (supprimer, modifier, etc.)
+        //             ...doc.data(), // Récupère les données du document
+        //         }));
+        //         setMateriels(materielsData); // Mettez à jour l'état avec les données récupérées
+        //         setIsLoading(false); // Les données ont été chargées, on arrête le chargement
+        //     } catch (error) {
+        //         console.error("Erreur lors de la récupération des matériels :", error);
+        //         setIsLoading(false); // En cas d'erreur, arrêter également le chargement
+        //     }
+        // };
+
+        // fetchMateriels(); // Appel de la fonction pour récupérer les matériels
         const fetchMateriels = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, 'historiques')); // Récupère tous les matériels de la collection "materiels"
-                const materielsData = querySnapshot.docs.map(doc => ({
-                    id: doc.id, // Ajoutez l'ID du document pour des opérations futures (supprimer, modifier, etc.)
-                    ...doc.data(), // Récupère les données du document
-                }));
-                setMateriels(materielsData); // Mettez à jour l'état avec les données récupérées
-                setIsLoading(false); // Les données ont été chargées, on arrête le chargement
+                const querySnapshot = await getDocs(collection(db, 'historiques'));
+                const materielsData = querySnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    return {
+                        id: doc.id,
+                        ...data,
+                        createdAt: data.createdAt ? new Date(data.createdAt.seconds * 1000) : new Date() // Conversion en Date
+                    };
+                });
+    
+                // Trier du plus récent au plus ancien
+                const sortedMateriels = materielsData.sort((a, b) => b.createdAt - a.createdAt);
+    
+                setMateriels(sortedMateriels);
+                setIsLoading(false);
             } catch (error) {
                 console.error("Erreur lors de la récupération des matériels :", error);
-                setIsLoading(false); // En cas d'erreur, arrêter également le chargement
+                setIsLoading(false);
             }
         };
-
-        fetchMateriels(); // Appel de la fonction pour récupérer les matériels
-
+    
+        fetchMateriels();
 
         // recuperation des informations pour la facture
         const fetchFacture = async () => {
@@ -96,13 +120,27 @@ function VueDEnsemble() {
         return () => unsubscribe();
     }, []);
 
+    const handleDeleteItem = async (id) => {
+        try {
+            await deleteDoc(doc(db, 'historiques', id)); // Supprime le document avec l'ID spécifié de la collection "historiques"
+            setMateriels(materiels.filter(materiel => materiel.id !== id)); // Met à jour l'état pour supprimer l'élément localement
+            toast.success("Elément supprimé avec succès");
+        } catch (error) {
+            console.error("Erreur lors de la suppression de l'élément :", error);
+            toast.error("Une erreur est survenue. Veuillez réessayer.");
 
+        }
+    };
+
+console.log(materiels)
     // Filtrer les matériels en fonction du texte de recherche
-    let filteredMateriels = materiels.filter(materiel =>
+    let filteredMateriels = materiels
+    .filter(materiel => materiel && typeof materiel === "object") // Vérifie que l'objet est valide
+    .filter(materiel =>
         materiel?.nomClient?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         materiel?.destination?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         materiel?.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        materiel?.type?.toLowerCase().includes(searchTerm.toLowerCase()) // Ajoutez d'autres champs si nécessaire
+        materiel?.faitPar?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -197,16 +235,17 @@ function VueDEnsemble() {
                     <thead>
                         <tr>
                             <th>Type</th>
-                            <th>Fait par</th>
+                            <th>Enregistreur</th>
                             <th>Client</th>
                             <th>Téléphone</th>
                             <th>Destination</th>
-                            <th >Liste matériel </th>
+                            <th>Liste matériel </th>
                             <th>Total</th>
-                            <th>remise</th>
+                            <th>Remise</th>
                             <th>Total Final</th>
                             <th>Date</th>
                             <th>pdf</th>
+                            {JSON.parse(localStorage.getItem('user'))?.type === "admin" && <th>Actions</th>}  
                         </tr>
                     </thead>
                     <tbody>
@@ -235,13 +274,19 @@ function VueDEnsemble() {
                                             </ul>
                                         </td>
                                         <td>{data.type === "Sortie" ? data.total : "-"}</td>
-                                        <td>{data.type === "Sortie" ? data.remise : "-"}</td>
+                                        <td>{data.type === "Sortie" ? `${data.remise}%` : "-"}</td>
                                         <td>{data.type === "Sortie" ? data.montant : "-"}</td>
-                                        <td>{data.createdAt}</td>
+                                        <td>{data.createdAt ? data.createdAt.toLocaleDateString() : "Date inconnue"}</td>
                                         <td>
                                         {data.type === "Sortie" ? <Recupdf data={data} facturesInfo={facturesInfo} /> : "-"}
                                             
                                         </td>
+                            {JSON.parse(localStorage.getItem('user'))?.type === "admin" && <td><FaTrashAlt style={{color:"red", cursor: "pointer", fontSize:"18px"}} onClick={() => {
+                                if (window.confirm("Voulez-vous vraiment supprimer cet élément ?")) {
+                                    handleDeleteItem(data.id);
+                                }
+                            }}/></td>}  
+
                                     </tr>
                                 ))
                         }
@@ -249,6 +294,7 @@ function VueDEnsemble() {
                     </tbody>
                 </Table>
             </div>
+            <ToastContainer position="top-right" autoClose={3000} />
 
         </div>
     )

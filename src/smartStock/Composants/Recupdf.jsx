@@ -14,7 +14,7 @@ const DevisPDF = ({ data, facturesInfo }) => {
           
           <View style={styles.headerText}>
             <Text style={styles.title}>FACTURE</Text>
-            <Text>Date: {data?.createdAt || ""}</Text>
+            <Text>Date: {data.createdAt ? data.createdAt.toLocaleDateString() : "Date inconnue"}</Text>
             {/* <Text>Numéro: 001/04</Text> */}
             {/* <Text>Valable: {data?.valDate || ""}</Text> */}
           </View>
@@ -62,7 +62,7 @@ const DevisPDF = ({ data, facturesInfo }) => {
         {/* Totaux */}
         <View style={styles.totals}>
           <Text>Total HT : {data?.total} F</Text>
-          <Text>Remise : {data?.remise} F</Text>
+          <Text>Remise : {data?.remise} %</Text>
           <Text style={styles.bold}>TOTAL HT avec remise : {data?.montant} F CFA</Text>
         </View>
 
@@ -102,7 +102,7 @@ const Recupdf = ({ data, facturesInfo }) => {
   return (
     <PDFDownloadLink
       document={<DevisPDF data={data} facturesInfo={facturesInfo[0]} />}
-      fileName={`devis-${data?.createdAt || ""}.pdf`}
+      fileName={`devis-${data.createdAt ? data.createdAt.toLocaleDateString() : "Date inconnue"}.pdf`}
       style={{
         textDecoration: 'none',
         color: '#fff',

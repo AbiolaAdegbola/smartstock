@@ -105,7 +105,7 @@ export default function EntrerMateriel() {
         montant: 0,
         type: "Entrée",
         destination: "",
-        createdAt: new Date().toLocaleDateString(),
+        createdAt: new Date(),
         faitPar: JSON.parse(localStorage.getItem('user')).nom,
       };
 

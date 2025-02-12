@@ -12,7 +12,7 @@ export default function SortirMateriel() {
   const [errorsMesg, setErrorsMesg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedMateriels, setSelectedMateriels] = useState([]); // Matériels sélectionnés
-  const [remise, setRemise] = useState(0);
+  const [remise, setRemise] = useState();
 
   // Récupérer les matériels depuis Firebase
   useEffect(() => {
@@ -74,9 +74,13 @@ export default function SortirMateriel() {
   };
 
   // Calculer le total après remise
+  // const calculateTotalAfterRemise = () => {
+  //   const total = calculateTotal();
+  //   return remise > 0 ? total - remise : total;
+  // };
   const calculateTotalAfterRemise = () => {
     const total = calculateTotal();
-    return remise > 0 ? total - remise : total;
+    return remise > 0 ? total - (total * remise / 100) : total;
   };
 
   // Validation et enregistrement de la sortie
@@ -117,7 +121,7 @@ export default function SortirMateriel() {
         montant: calculateTotalAfterRemise(),
         type: "Sortie",
         destination: data.destination,
-        createdAt: new Date().toLocaleDateString(),
+        createdAt: new Date(),
         faitPar: JSON.parse(localStorage.getItem('user')).nom,
       };
 
@@ -207,7 +211,7 @@ export default function SortirMateriel() {
             <td colSpan="3" style={{ textAlign: "right" }}>Total avant remise (F CFA)</td>
             <td>{calculateTotal()}</td>
           </tr>
-          <tr>
+          {/* <tr>
             <td colSpan="3" style={{ textAlign: "right" }}>Remise (F CFA)</td>
             <td>
               <input
@@ -217,7 +221,25 @@ export default function SortirMateriel() {
                 onChange={(e) => setRemise(parseInt(e.target.value))}
               />
             </td> 
-          </tr>
+          </tr> */}
+
+<tr>
+  <td colSpan="3" style={{ textAlign: "right" }}>Remise (%)</td>
+  <td>
+    <input
+      type="number"
+      style={{ width: "100px" }}
+      value={remise}
+      min="0"
+      max="100"
+      onChange={(e) => {
+        // let value = parseInt(e.target.value) || 0;
+        if (parseInt(e.target.value) > 100) setRemise(100); // Limiter la remise à 100%
+        setRemise(parseInt(e.target.value));
+      }}
+    /> 
+  </td> 
+</tr>
 
           <tr>
             <td colSpan="3" style={{ textAlign: "right" }}>Total après remise (F CFA)</td>
