@@ -149,7 +149,7 @@ console.log(materiels)
             <div className='row'>
                 <div className='col-lg-8'>
                     {/* banniere */}
-                    <div style={{ width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192,192,0.3)", height: "28vh", padding: "20px", position: "relative" }}>
+                    <div style={{ width: "100%", backgroundColor: "white", borderRadius: "5px", boxShadow: "0px 0px 1px 1px rgba(192, 192,192,0.3)", height: "28vh", padding: "20px", position: "relative", overflowY: "auto" }}>
                         <h5 style={{ color: "goldenrod", fontSize: "22px" }}>
                             Félicitation Salomon ! 🎉🎊
                         </h5>
@@ -204,7 +204,7 @@ console.log(materiels)
                     {/* Barre de recherche */}
                     <input
                         type="text"
-                        placeholder="Rechercher un matériel..."
+                        placeholder="Rechercher..." // Placeholder pour la barre de recherche
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{
