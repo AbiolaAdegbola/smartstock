@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Spinner } from "react-bootstrap";
 import logo from '../../assets/logo.png'
-import signature from '../../assets/signature.png'
+// import signature from '../../assets/signature.png'
 import { toast, ToastContainer } from "react-toastify";
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import db from '../../firebase-config'; // Importez vos configurations Firebase
@@ -83,12 +83,12 @@ const FactureModel = () => {
         email: data.email,
         adresse: data.adresse,
         statutJuridique: data.statutJuridique,
-        capital: data.capital,
-        siteWeb: data.siteWeb,
-        rccm: data.rccm,
-        n_cc: data.n_cc,
-        iban: data.iban,
-        bank: data.bank,
+        // capital: data.capital,
+        // siteWeb: data.siteWeb,
+        // rccm: data.rccm,
+        // n_cc: data.n_cc,
+        // iban: data.iban,
+        // bank: data.bank,
         description: data.description
       }
 
@@ -311,15 +311,15 @@ const Devis1 = ({ data }) => {
         </p>
       </div>
 
-      <div style={styles.signature}>
+      {/* <div style={styles.signature}>
         <p>Signature du Gérant</p>
         <img src={signature} alt="signature" style={{ width: "150px", height: "150px" }} />
-      </div>
+      </div> */}
 
-      <div style={styles.footer}>
+      {/* <div style={styles.footer}>
         <p>Mode de paiement : Banque : {data?.bank}  Carte bleue, Chèque à l'ordre de {data?.nomEntreprise}, Virement (RIB) : {data?.iban}, espèce.<br />
           Capital social : {data?.capital}, N°RCCM : {data?.rccm}, N°CC : {data?.n_cc}, site web : {data?.siteWeb}, E-mail : {data?.email}</p>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from '@react-pdf/renderer';
 import { FaPrint } from 'react-icons/fa';
 import logo from '../../assets/logo.png';
-import signature from '../../assets/signature.png';
+// import signature from '../../assets/signature.png';
 
 const DevisPDF = ({ data, facturesInfo }) => {
   console.log(data, facturesInfo);
@@ -75,22 +75,22 @@ const DevisPDF = ({ data, facturesInfo }) => {
         </View>
 
         {/* Signature */}
-        <View style={{marginTop: 30, flexDirection: 'row', justifyContent: 'flex-end'}}>
+        {/* <View style={{marginTop: 30, flexDirection: 'row', justifyContent: 'flex-end'}}>
           <View>
           <Text style={{marginLeft:30}}>Signature du Gérant</Text>
           <Image src={signature} style={styles.signatureImage} />
           </View>
-        </View>
+        </View> */}
 
         {/* Pied de page */}
-        <View style={{position: 'absolute', bottom: 30, left: 10, right: 10, textAlign: 'center', color: '#666', fontSize:10}}>
+        {/* <View style={{position: 'absolute', bottom: 30, left: 10, right: 10, textAlign: 'center', color: '#666', fontSize:10}}>
           <Text>
             Mode de paiement : {facturesInfo?.bank} | Chèque à l'ordre de {facturesInfo?.nomEntreprise} | Virement (RIB) : {facturesInfo?.iban} | Espèce.
           </Text>
           <Text>
             Capital social : {facturesInfo?.capital} | N°RCCM : {facturesInfo?.rccm} | N°CC : {facturesInfo?.n_cc} | Site web : {facturesInfo?.siteWeb} | E-mail : {facturesInfo?.email}
           </Text>
-        </View>
+        </View> */}
       </Page>
     </Document>
   );
@@ -102,7 +102,7 @@ const Recupdf = ({ data, facturesInfo }) => {
   return (
     <PDFDownloadLink
       document={<DevisPDF data={data} facturesInfo={facturesInfo[0]} />}
-      fileName={`devis-${data.createdAt ? data.createdAt.toLocaleDateString() : "Date inconnue"}.pdf`}
+      fileName={`Devis ${data.nomClient} du ${data.createdAt.toLocaleDateString()}.pdf`}
       style={{
         textDecoration: 'none',
         color: '#fff',
