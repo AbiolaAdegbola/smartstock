@@ -157,11 +157,28 @@ const FactureModel = () => {
                 />
               </div>
 
-              <div style={{ marginBottom: "10px", marginTop: "30px", padding: "4px 20px", backgroundColor: "rgb(0,172,237)", color: "white", borderRadius: "4px", textAlign: "center", cursor: "pointer" }} onClick={() => handleModelDevis(2)}>SUIVANT</div>
+              <div style={{ textAlign: 'center', marginTop: '20px', marginBottom: "20px", }}>
+                <button
+                  type="submit"
+                  style={{
+                    color: 'white',
+                    backgroundColor: 'rgb(0,172,237)',
+                    borderRadius: '5px',
+                    padding: '8px 16px',
+                    cursor: 'pointer',
+                    border: 'none',
+                    width: "100%"
+                  }}
+                  disabled={loading}
+                >
+                  {loading ? <Spinner animation="border" size="sm" /> : "TERMINER"}
+                </button>
+              </div>
+
             </div>
 
             {/* DONNEES COMPTE ET NUMERO IBAN */}
-            <div style={{ display: actifContainer === 2 ? "initial" : "none" }}>
+            {/* <div style={{ display: actifContainer === 2 ? "initial" : "none" }}>
               <h6 style={{ textDecoration: "underline", textAlign: "center", color: "gray" }}>Vos coordornnées</h6>
 
               {[
@@ -173,7 +190,7 @@ const FactureModel = () => {
                 { name: "iban", label: "N° IBAN", placeholder: "N° IBAN" },
               ].map((field) => (
                 <div key={field.name} style={{ marginBottom: "10px" }}>
-                  {/* <label>{field.label}</label> */}
+                  <label>{field.label}</label>
                   <Controller
                     name={field.name}
                     control={control}
@@ -207,7 +224,7 @@ const FactureModel = () => {
                 </button>
               </div>
 
-            </div>
+            </div> */}
           </form>
         </div>
 
@@ -226,8 +243,6 @@ const FactureModel = () => {
 
         </div>
       </div>
-
-      <ToastContainer position="top-right" autoClose={3000} />
 
     </div>
   );

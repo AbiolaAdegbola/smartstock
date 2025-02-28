@@ -7,6 +7,7 @@ import UpdateMateriel from './smartStock/UpdateMateriel';
 import { Analytics } from "@vercel/analytics/react"
 import 'react-toastify/dist/ReactToastify.css';
 import Inscription from './smartStock/Inscription';
+import { ToastContainer } from 'react-toastify';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path='/ajouter-utilisateur' element={<Inscription/>}/>
         <Route path='/' element={<Connexion/>}/>
       </Routes>
+      <ToastContainer position="top-right" autoClose={3000} />
       <Analytics/>
     </div>
   );
